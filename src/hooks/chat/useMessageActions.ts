@@ -11,6 +11,9 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
   const handleSubmit = async (input: string, e?: React.FormEvent) => {
     e?.preventDefault();
     
+    // Filter out remembered messages to include in context
+    const rememberedMessages = messages.filter(msg => msg.remembered);
+    
     // Allow empty input for the continue functionality
     if (!input.trim() && e) return;
     
@@ -40,7 +43,10 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
     
     try {
       setIsLoading(true);
-      const messagesToSend = [...messages];
+      const messagesToSend = [
+        ...rememberedMessages,
+        ...messages.filter(msg => msg.role === "system")
+      ];
       
       if (instructions) {
         messagesToSend.push({
@@ -65,10 +71,7 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
         }
       }
       
-      // Fix: Make sure we send complete Message objects to the API
-      const apiMessages = messagesToSend;
-      
-      const response = await generateChatCompletion(apiMessages);
+      const response = await generateChatCompletion(messagesToSend);
       
       const newAssistantMessage: Message = {
         id: `assistant-${Date.now()}`,
