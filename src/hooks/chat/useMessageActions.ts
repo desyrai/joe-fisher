@@ -1,39 +1,14 @@
 
 import { useState } from "react";
+import { Message } from "@/components/Chat/types";
 import { generateChatCompletion } from "@/services/groqService";
 import { toast } from "sonner";
-import { Message } from "@/components/Chat/types";
 import { processInstructions } from "@/components/Chat/utils";
 
-interface UseChatProps {
-  characterName: string;
-  initialSystemMessage: string;
-}
-
-export const useChat = ({ characterName, initialSystemMessage }: UseChatProps) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
+export const useMessageActions = (messages: Message[], setMessages: React.Dispatch<React.SetStateAction<Message[]>>) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const initializeChat = () => {
-    const initialMessages: Message[] = [
-      {
-        id: "system-1",
-        role: "system",
-        content: initialSystemMessage,
-        timestamp: Date.now(),
-      },
-      {
-        id: "assistant-welcome",
-        role: "assistant",
-        content: `Hello, I'm ${characterName}. It's lovely to meet you. What's on your mind today?`,
-        timestamp: Date.now(),
-      },
-    ];
-    setMessages(initialMessages);
-  };
-
-  const handleSubmit = async (e?: React.FormEvent) => {
+  const handleSubmit = async (input: string, e?: React.FormEvent) => {
     e?.preventDefault();
     
     if (!input.trim() && !e) return;
@@ -46,7 +21,6 @@ export const useChat = ({ characterName, initialSystemMessage }: UseChatProps) =
       timestamp: Date.now(),
     };
     
-    setInput("");
     setMessages((prevMessages) => [...prevMessages, newUserMessage]);
     
     if (instructions) {
@@ -106,10 +80,6 @@ export const useChat = ({ characterName, initialSystemMessage }: UseChatProps) =
     }
   };
 
-  const handleContinue = () => {
-    handleSubmit();
-  };
-
   const handleRegenerateLastMessage = async () => {
     const lastAssistantIndex = [...messages].reverse().findIndex(
       (msg) => msg.role === "assistant" && msg.id !== "assistant-welcome"
@@ -150,52 +120,9 @@ export const useChat = ({ characterName, initialSystemMessage }: UseChatProps) =
     }
   };
 
-  const handleRemember = (messageId: string) => {
-    setMessages((prevMessages) =>
-      prevMessages.map((msg) =>
-        msg.id === messageId ? { ...msg, remembered: !msg.remembered } : msg
-      )
-    );
-  };
-
-  const handleNewChat = () => {
-    const rememberedMessages = messages.filter(
-      (msg) => msg.remembered || msg.role === "system"
-    );
-    
-    const newMessages: Message[] = [
-      ...rememberedMessages,
-      {
-        id: `assistant-welcome-${Date.now()}`,
-        role: "assistant",
-        content: `Starting a fresh conversation. Is there something specific you'd like to discuss?`,
-        timestamp: Date.now(),
-      },
-    ];
-    
-    setMessages(newMessages);
-    setInput("");
-  };
-
-  const handleEditMessage = (messageId: string, newContent: string) => {
-    setMessages((prevMessages) =>
-      prevMessages.map((msg) =>
-        msg.id === messageId ? { ...msg, content: newContent } : msg
-      )
-    );
-  };
-
   return {
-    messages,
-    input,
-    setInput,
     isLoading,
     handleSubmit,
-    handleContinue,
     handleRegenerateLastMessage,
-    handleRemember,
-    handleNewChat,
-    handleEditMessage,
-    initializeChat,
   };
 };
