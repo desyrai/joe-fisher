@@ -4,7 +4,7 @@ import { Message } from "./types";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bookmark, Edit, SkipForward } from "lucide-react";
+import { Bookmark, Edit, SkipForward, Check, X } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 interface ChatMessageProps {
@@ -83,7 +83,7 @@ const ChatMessage = ({ message, onRemember, onEdit, onContinue, characterAvatar 
                   em: ({node, ...props}) => <em className="italic text-desyr-deep-gold not-italic" {...props} />
                 }}
               >
-                {formattedContent}
+                {message.content}
               </ReactMarkdown>
             )}
           </div>
