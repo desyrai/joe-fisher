@@ -42,14 +42,14 @@ export const useChat = ({ characterName, initialSystemMessage }: UseChatProps) =
     // Clear input before sending to prevent it from re-appearing
     setInput("");
     
-    // Only proceed if there's actual input to send
-    if (currentInput) {
+    // Only proceed if there's actual input to send or it's a continue operation (!e)
+    if (currentInput || !e) {
       await handleSubmit(currentInput, e);
     }
   };
 
   const handleContinue = async () => {
-    // We send an empty message to trigger a continuation
+    // We explicitly pass empty string for continue functionality
     try {
       await handleSubmit("", undefined);
     } catch (error) {

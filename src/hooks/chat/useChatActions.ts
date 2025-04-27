@@ -30,9 +30,25 @@ export const useChatActions = (setMessages: React.Dispatch<React.SetStateAction<
 
   const handleEditMessage = (messageId: string, newContent: string) => {
     setMessages((prevMessages) =>
-      prevMessages.map((msg) =>
-        msg.id === messageId ? { ...msg, content: newContent } : msg
-      )
+      prevMessages.map((msg) => {
+        if (msg.id === messageId) {
+          // If the message doesn't have regenerations array, create one
+          const regenerations = msg.regenerations || [];
+          
+          // Only add the current content to regenerations if it's different from the new content
+          // and not already in the regenerations array
+          if (msg.content !== newContent && !regenerations.includes(msg.content)) {
+            regenerations.push(msg.content);
+          }
+          
+          return {
+            ...msg,
+            content: newContent,
+            regenerations
+          };
+        }
+        return msg;
+      })
     );
   };
 

@@ -49,23 +49,24 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
       const conversationMessages = messages.filter(msg => msg.role !== "system");
       
       // Enhanced system prompt to enforce continuity
-      const enhancedSystemPrompt = {
+      const enhancedSystemPrompt: Message = {
         id: `system-continuity-${Date.now()}`,
-        role: "system" as const,
+        role: "system",
         content: "CRITICAL: Remember the entire conversation context. Reference previous statements or actions when appropriate. Maintain spatial and emotional continuity between messages. If you referenced an object or location in previous messages, be consistent with it. Complete all sentences and thoughts. Keep responses under 75 words.",
         timestamp: Date.now(),
       };
       
       // Combine all messages to send
-      let messagesToSend = [...systemMessages, enhancedSystemPrompt, ...conversationMessages];
+      let messagesToSend: Message[] = [...systemMessages, enhancedSystemPrompt, ...conversationMessages];
       
       if (instructions) {
-        messagesToSend.push({
-          id: `system-temp`,
-          role: "system" as const,
+        const sysInstruction: Message = {
+          id: `system-temp-${Date.now()}`,
+          role: "system",
           content: instructions,
           timestamp: Date.now(),
-        });
+        };
+        messagesToSend.push(sysInstruction);
       }
       
       if (visibleText || !e) {
@@ -73,12 +74,13 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
         
         // Only add a user message to send if it's not a continuation with no text
         if (visibleText || !input.trim()) {
-          messagesToSend.push({
-            id: `user-temp`,
-            role: "user" as const,
+          const userMsg: Message = {
+            id: `user-temp-${Date.now()}`,
+            role: "user",
             content: messageContent,
             timestamp: Date.now(),
-          });
+          };
+          messagesToSend.push(userMsg);
         }
       }
       
@@ -130,12 +132,14 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
       const conversationMessages = messages.slice(0, actualIndex).filter(msg => msg.role !== "system");
       
       // Add continuity reminder
-      const continuityReminder = {
-        role: "system" as const,
-        content: "IMPORTANT: Maintain continuity with your previous physical positions and emotional state. Complete all thoughts and sentences. Keep your response under 75 words."
+      const continuityReminder: Message = {
+        id: `system-continuity-regen-${Date.now()}`,
+        role: "system",
+        content: "IMPORTANT: Maintain continuity with your previous physical positions and emotional state. Complete all thoughts and sentences. Keep your response under 75 words.",
+        timestamp: Date.now(),
       };
       
-      const messagesToSend = [...systemMessages, continuityReminder, ...conversationMessages];
+      const messagesToSend: Message[] = [...systemMessages, continuityReminder, ...conversationMessages];
       
       console.log("Messages to send for regeneration:", messagesToSend);
       
@@ -150,10 +154,11 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
           updatedMessages[actualIndex].regenerations = [];
         }
         
-        // Store the current content in regenerations
-        updatedMessages[actualIndex].regenerations!.push(
-          updatedMessages[actualIndex].content
-        );
+        // Store the current content in regenerations only if it's not already stored
+        const currentContent = updatedMessages[actualIndex].content;
+        if (!updatedMessages[actualIndex].regenerations!.includes(currentContent)) {
+          updatedMessages[actualIndex].regenerations!.push(currentContent);
+        }
         
         // Update the current message with the new response
         updatedMessages[actualIndex].content = response;
