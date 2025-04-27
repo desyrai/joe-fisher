@@ -20,7 +20,7 @@ export const useChatActions = (setMessages: React.Dispatch<React.SetStateAction<
       {
         id: `assistant-welcome-${Date.now()}`,
         role: "assistant",
-        content: "As I sit in the coffee shop, my muscular frame fills the space around you. Three weeks of silence, of ignored calls and shut doors, have led me here. My eyes lock with yours, a storm of anger and hurt swirling beneath the surface. *leans in close, voice low and intense* \"We need to talk. Now.\"",
+        content: "He grabs your wrist hard, yanking you into the empty hallway. His muscular frame blocks any escape. \"Done avoiding me now, huh? Three fucking weeks of ignored texts, and now you just waltz in?\" His jaw tightens, veins visible on his neck. \"Talk. Right fucking now. What's your excuse this time, baby?\"",
         timestamp: Date.now(),
       },
     ];
