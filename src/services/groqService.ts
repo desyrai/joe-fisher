@@ -41,8 +41,8 @@ export const getGroqApiKey = (): string | null => {
 export const generateChatCompletion = async (
   messages: Message[],
   model: string = TEMP_MODEL,
-  temperature: number = 0.9,
-  max_tokens: number = 150,
+  temperature: number = 0.7,
+  max_tokens: number = 100,
 ): Promise<string> => {
   const apiKey = getGroqApiKey();
   
@@ -70,7 +70,7 @@ export const generateChatCompletion = async (
     max_tokens,
     top_p: 0.9,
     frequency_penalty: 0.3,
-    presence_penalty: 0.7,
+    presence_penalty: 0.5,
   };
 
   try {
