@@ -96,39 +96,39 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
       (msg) => msg.role === "assistant" && msg.id !== "assistant-welcome"
     );
     
-    if (lastAssistantIndex === -1) return;
+    if (lastAssistantIndex === -1) {
+      toast.error("No message to regenerate");
+      return;
+    }
     
     const actualIndex = messages.length - 1 - lastAssistantIndex;
     const messageToRegenerate = messages[actualIndex];
     
-    // Create updatedMessages array
-    const updatedMessages = [...messages];
-    
-    // Initialize the regenerations array if it doesn't exist
-    if (!updatedMessages[actualIndex].regenerations) {
-      updatedMessages[actualIndex].regenerations = [];
-    }
-    
-    // Store the current content in regenerations
-    updatedMessages[actualIndex].regenerations!.push(
-      updatedMessages[actualIndex].content
-    );
-    
-    setMessages(updatedMessages);
+    // Create a copy of messages up to but not including the message to regenerate
+    const messagesToSend = messages.slice(0, actualIndex);
     
     try {
       setIsLoading(true);
       
-      // Get all messages up to the one we're regenerating
-      const messagesToSend = messages.slice(0, actualIndex);
-      
-      // Generate a new response
       const response = await generateChatCompletion(messagesToSend);
       
-      // Update the message with the new response
-      const finalMessages = [...updatedMessages];
-      finalMessages[actualIndex].content = response;
-      setMessages(finalMessages);
+      // Update the messages array with the new response
+      const updatedMessages = [...messages];
+      
+      // Initialize regenerations array if it doesn't exist
+      if (!updatedMessages[actualIndex].regenerations) {
+        updatedMessages[actualIndex].regenerations = [];
+      }
+      
+      // Store the current content in regenerations
+      updatedMessages[actualIndex].regenerations!.push(
+        updatedMessages[actualIndex].content
+      );
+      
+      // Update the current message with the new response
+      updatedMessages[actualIndex].content = response;
+      
+      setMessages(updatedMessages);
     } catch (error) {
       console.error("Error regenerating response:", error);
       toast.error("Failed to regenerate response. Please try again.");
