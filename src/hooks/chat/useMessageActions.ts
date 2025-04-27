@@ -65,10 +65,8 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
         }
       }
       
-      const apiMessages = messagesToSend.map(({ role, content }) => ({
-        role,
-        content,
-      }));
+      // Fix: Make sure we send complete Message objects to the API
+      const apiMessages = messagesToSend;
       
       const response = await generateChatCompletion(apiMessages);
       
@@ -112,9 +110,8 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
     
     try {
       setIsLoading(true);
-      const messagesToSend = messages
-        .slice(0, actualIndex)
-        .map(({ role, content }) => ({ role, content }));
+      // Fix: Use the complete Message objects without mapping and removing properties
+      const messagesToSend = messages.slice(0, actualIndex);
       
       const response = await generateChatCompletion(messagesToSend);
       
