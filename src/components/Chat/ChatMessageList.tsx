@@ -31,8 +31,9 @@ const ChatMessageList = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Find the last assistant message
   const lastAssistantMessage = messages
-    .filter(msg => msg.role === "assistant")
+    .filter(msg => msg.role === "assistant" && msg.id !== "assistant-welcome")
     .slice(-1)[0];
 
   return (
@@ -45,7 +46,7 @@ const ChatMessageList = ({
             message={message}
             onRemember={() => onRemember(message.id)}
             onEdit={(content) => onEdit(message.id, content)}
-            onRegenerate={message === lastAssistantMessage ? onRegenerate : undefined}
+            onRegenerate={message.id === lastAssistantMessage?.id ? onRegenerate : undefined}
             characterAvatar={characterAvatar}
           />
         ))}
@@ -67,4 +68,3 @@ const ChatMessageList = ({
 };
 
 export default ChatMessageList;
-

@@ -92,22 +92,30 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
 
   const handleRegenerateLastMessage = async () => {
     console.log("Regenerating last message...");
-    // Find the last assistant message (excluding the welcome message)
-    const lastAssistantIndex = [...messages].reverse().findIndex(
-      (msg) => msg.role === "assistant" && msg.id !== "assistant-welcome"
+    
+    // Find the last assistant message, excluding the welcome message
+    const assistantMessages = messages.filter(
+      msg => msg.role === "assistant" && msg.id !== "assistant-welcome"
     );
     
-    if (lastAssistantIndex === -1) {
+    if (assistantMessages.length === 0) {
       toast.error("No message to regenerate");
       return;
     }
     
-    const actualIndex = messages.length - 1 - lastAssistantIndex;
+    const lastAssistantMessage = assistantMessages[assistantMessages.length - 1];
+    const actualIndex = messages.findIndex(msg => msg.id === lastAssistantMessage.id);
+    
+    if (actualIndex === -1) {
+      toast.error("No message to regenerate");
+      return;
+    }
     
     try {
       setIsLoading(true);
       
-      // Create a copy of messages to send for context, including system messages and messages before the one being regenerated
+      // Create a copy of messages to send for context, including system messages and remembered messages
+      // Plus all messages leading up to but not including the message to regenerate
       const messagesToSend = [
         ...messages.filter(msg => msg.role === "system" || msg.remembered),
         ...messages.slice(0, actualIndex).filter(msg => msg.role !== "system" && !msg.remembered)
