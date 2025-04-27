@@ -27,7 +27,7 @@ export const useChat = ({ characterName, initialSystemMessage }: UseChatProps) =
       {
         id: "assistant-welcome",
         role: "assistant",
-        content: `Hello, I'm ${characterName}. It's lovely to meet you. What's on your mind today?`,
+        content: "As I sit in the coffee shop, my muscular frame fills the space around you. Three weeks of silence, of ignored calls and shut doors, have led me here. My eyes lock with yours, a storm of anger and hurt swirling beneath the surface. *leans in close, voice low and intense* \"We need to talk. Now.\"",
         timestamp: Date.now(),
       },
     ];
