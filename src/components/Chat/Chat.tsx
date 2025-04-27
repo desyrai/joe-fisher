@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -96,7 +97,7 @@ const Chat = ({
       if (processedInput.instructions) {
         messagesToSend.push({
           id: `system-temp`,
-          role: "system",
+          role: "system" as const,
           content: processedInput.instructions,
           timestamp: Date.now(),
         });
@@ -107,7 +108,7 @@ const Chat = ({
         const messageContent = processedInput.visibleText || "Please continue";
         messagesToSend.push({
           id: `user-temp`,
-          role: "user",
+          role: "user" as const,
           content: messageContent,
           timestamp: Date.now(),
         });
