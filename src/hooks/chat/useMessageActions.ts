@@ -11,17 +11,22 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
   const handleSubmit = async (input: string, e?: React.FormEvent) => {
     e?.preventDefault();
     
-    if (!input.trim() && !e) return;
+    // Allow empty input for the continue functionality
+    if (!input.trim() && e) return;
     
     const { visibleText, instructions } = processInstructions(input);
-    const newUserMessage: Message = {
-      id: `user-${Date.now()}`,
-      role: "user",
-      content: visibleText,
-      timestamp: Date.now(),
-    };
     
-    setMessages((prevMessages) => [...prevMessages, newUserMessage]);
+    // Only add a user message if there is visible text
+    if (visibleText) {
+      const newUserMessage: Message = {
+        id: `user-${Date.now()}`,
+        role: "user",
+        content: visibleText,
+        timestamp: Date.now(),
+      };
+      
+      setMessages((prevMessages) => [...prevMessages, newUserMessage]);
+    }
     
     if (instructions) {
       const instructionMessage: Message = {
@@ -48,12 +53,16 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
       
       if (visibleText || !e) {
         const messageContent = visibleText || "Please continue";
-        messagesToSend.push({
-          id: `user-temp`,
-          role: "user" as const,
-          content: messageContent,
-          timestamp: Date.now(),
-        });
+        
+        // Only add a user message to send if it's not a continuation with no text
+        if (visibleText || !input.trim()) {
+          messagesToSend.push({
+            id: `user-temp`,
+            role: "user" as const,
+            content: messageContent,
+            timestamp: Date.now(),
+          });
+        }
       }
       
       const apiMessages = messagesToSend.map(({ role, content }) => ({

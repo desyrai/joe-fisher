@@ -34,8 +34,13 @@ export const useChat = ({ characterName, initialSystemMessage }: UseChatProps) =
     setMessages(initialMessages);
   };
 
-  const handleContinue = () => {
-    handleSubmit(input);
+  const handleContinue = async () => {
+    // We send an empty message to trigger a continuation
+    try {
+      await handleSubmit("", undefined);
+    } catch (error) {
+      console.error("Error continuing conversation:", error);
+    }
   };
 
   return {

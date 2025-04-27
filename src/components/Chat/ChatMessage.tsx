@@ -31,6 +31,12 @@ const ChatMessage = ({ message, onRemember, onEdit, onContinue, characterAvatar 
     setIsEditing(false);
   };
   
+  const handleContinue = () => {
+    if (onContinue) {
+      onContinue();
+    }
+  };
+  
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}>
       <div className={`flex ${isUser ? "flex-row-reverse" : "flex-row"} max-w-[80%]`}>
@@ -114,7 +120,7 @@ const ChatMessage = ({ message, onRemember, onEdit, onContinue, characterAvatar 
                   type="button"
                   size="sm"
                   variant="ghost"
-                  onClick={onContinue}
+                  onClick={handleContinue}
                   className="text-xs px-2 py-0 h-6 text-desyr-taupe"
                 >
                   <SkipForward className="h-3 w-3 mr-1" />

@@ -32,6 +32,11 @@ const ChatInput = ({
     }
   };
 
+  const handleContinue = () => {
+    // We call onContinue directly with no input
+    onContinue();
+  };
+
   const insertItalics = () => {
     if (textareaRef.current) {
       const start = textareaRef.current.selectionStart;
@@ -94,7 +99,7 @@ const ChatInput = ({
             <Button
               type="button"
               variant="outline"
-              onClick={onContinue}
+              onClick={handleContinue}
               disabled={isLoading}
               className="border-desyr-soft-gold/30 hover:bg-desyr-soft-gold/10"
             >
