@@ -48,8 +48,16 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
       // Get all user and assistant messages to maintain conversation flow
       const conversationMessages = messages.filter(msg => msg.role !== "system");
       
+      // Enhanced system prompt to enforce continuity
+      const enhancedSystemPrompt = {
+        id: `system-continuity-${Date.now()}`,
+        role: "system" as const,
+        content: "CRITICAL: Remember the entire conversation context. Reference previous statements or actions when appropriate. Maintain spatial and emotional continuity between messages. If you referenced an object or location in previous messages, be consistent with it. Complete all sentences and thoughts. Keep responses under 75 words.",
+        timestamp: Date.now(),
+      };
+      
       // Combine all messages to send
-      let messagesToSend = [...systemMessages, ...conversationMessages];
+      let messagesToSend = [...systemMessages, enhancedSystemPrompt, ...conversationMessages];
       
       if (instructions) {
         messagesToSend.push({
@@ -118,11 +126,16 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
       setIsLoading(true);
       
       // Create a copy of all messages to send for context up to the message to regenerate
-      // Include all system messages, then all conversation messages up to the one being regenerated
       const systemMessages = messages.filter(msg => msg.role === "system");
       const conversationMessages = messages.slice(0, actualIndex).filter(msg => msg.role !== "system");
       
-      const messagesToSend = [...systemMessages, ...conversationMessages];
+      // Add continuity reminder
+      const continuityReminder = {
+        role: "system" as const,
+        content: "IMPORTANT: Maintain continuity with your previous physical positions and emotional state. Complete all thoughts and sentences. Keep your response under 75 words."
+      };
+      
+      const messagesToSend = [...systemMessages, continuityReminder, ...conversationMessages];
       
       console.log("Messages to send for regeneration:", messagesToSend);
       

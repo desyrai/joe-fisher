@@ -50,17 +50,46 @@ export const generateChatCompletion = async (
     throw new Error("Groq API key not set. Please set your API key.");
   }
 
-  // Format messages for the API, keeping the system message and the last 6 messages for context
+  // Format messages for the API
   let formattedMessages = [];
   
   // Always include system messages first
   const systemMessages = messages.filter(msg => msg.role === "system");
   formattedMessages.push(...systemMessages.map(({ role, content }) => ({ role, content })));
   
-  // Get recent conversation history (excluding system messages)
+  // Get conversation history (excluding system messages)
   const conversationMessages = messages.filter(msg => msg.role !== "system");
-  const recentMessages = conversationMessages.slice(-6); // Keep last 6 messages for context
   
+  // Add a special system message reminding about continuity with the previous messages
+  if (conversationMessages.length > 0) {
+    // Find the last two assistant messages for continuity context
+    const lastAssistantMessages = conversationMessages
+      .filter(msg => msg.role === "assistant")
+      .slice(-2);
+    
+    if (lastAssistantMessages.length > 0) {
+      let continuityPrompt = "IMPORTANT: Maintain continuity with your previous actions. ";
+      
+      lastAssistantMessages.forEach(msg => {
+        // Extract physical actions from the previous messages using regex
+        const physicalActionMatches = msg.content.match(/\*(.*?)\*/g);
+        if (physicalActionMatches && physicalActionMatches.length > 0) {
+          continuityPrompt += "In your previous messages you were physically: " + 
+            physicalActionMatches.join(" then ") + ". ";
+        }
+      });
+      
+      continuityPrompt += "Make sure your next actions flow naturally from this physical position.";
+      
+      formattedMessages.push({
+        role: "system",
+        content: continuityPrompt
+      });
+    }
+  }
+  
+  // Keep all conversation messages for better context, up to a reasonable limit
+  const recentMessages = conversationMessages.slice(-8); // Increased from 6 to 8 for better context
   formattedMessages.push(...recentMessages.map(({ role, content }) => ({ role, content })));
 
   const requestData: ChatCompletionRequest = {
