@@ -91,8 +91,8 @@ const ChatInput = ({
             type="button"
             variant="outline"
             onClick={handleRegenerate}
-            disabled={isLoading || !hasMessages}
-            className="border-desyr-soft-gold/30 hover:bg-desyr-soft-gold/10"
+            disabled={!hasMessages || isLoading}
+            className={`border-desyr-soft-gold/30 ${!hasMessages || isLoading ? 'opacity-50' : 'hover:bg-desyr-soft-gold/10'}`}
           >
             <RefreshCw className="h-4 w-4 mr-2" />
             Regenerate
