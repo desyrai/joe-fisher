@@ -49,6 +49,7 @@ const Chat = ({
         isLoading={isLoading}
         onRemember={handleRemember}
         onEdit={handleEditMessage}
+        onContinue={handleContinue}
         characterAvatar={characterAvatar}
       />
       

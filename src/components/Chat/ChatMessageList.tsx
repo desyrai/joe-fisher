@@ -9,6 +9,7 @@ interface ChatMessageListProps {
   isLoading: boolean;
   onRemember: (messageId: string) => void;
   onEdit: (messageId: string, content: string) => void;
+  onContinue?: () => void;
   characterAvatar?: string;
 }
 
@@ -17,6 +18,7 @@ const ChatMessageList = ({
   isLoading,
   onRemember,
   onEdit,
+  onContinue,
   characterAvatar
 }: ChatMessageListProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -29,6 +31,10 @@ const ChatMessageList = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const lastAssistantMessage = messages
+    .filter(msg => msg.role === "assistant")
+    .slice(-1)[0];
+
   return (
     <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
       {messages
@@ -39,6 +45,7 @@ const ChatMessageList = ({
             message={message}
             onRemember={() => onRemember(message.id)}
             onEdit={(content) => onEdit(message.id, content)}
+            onContinue={message === lastAssistantMessage ? onContinue : undefined}
             characterAvatar={characterAvatar}
           />
         ))}

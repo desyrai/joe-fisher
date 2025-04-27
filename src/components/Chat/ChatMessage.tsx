@@ -4,17 +4,18 @@ import { Message } from "./types";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bookmark, Edit, Check, X } from "lucide-react";
+import { Bookmark, Edit, SkipForward } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 interface ChatMessageProps {
   message: Message;
   onRemember: () => void;
   onEdit: (newContent: string) => void;
+  onContinue?: () => void;
   characterAvatar?: string;
 }
 
-const ChatMessage = ({ message, onRemember, onEdit, characterAvatar }: ChatMessageProps) => {
+const ChatMessage = ({ message, onRemember, onEdit, onContinue, characterAvatar }: ChatMessageProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
   
@@ -29,9 +30,6 @@ const ChatMessage = ({ message, onRemember, onEdit, characterAvatar }: ChatMessa
     setEditContent(message.content);
     setIsEditing(false);
   };
-  
-  // Format message content (handle italics)
-  const formattedContent = message.content;
   
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}>
@@ -110,6 +108,19 @@ const ChatMessage = ({ message, onRemember, onEdit, characterAvatar }: ChatMessa
                 <Bookmark className={`h-3 w-3 mr-1 ${message.remembered ? "fill-desyr-deep-gold" : ""}`} />
                 {message.remembered ? "Remembered" : "Remember"}
               </Button>
+
+              {!isUser && onContinue && (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={onContinue}
+                  className="text-xs px-2 py-0 h-6 text-desyr-taupe"
+                >
+                  <SkipForward className="h-3 w-3 mr-1" />
+                  Continue
+                </Button>
+              )}
               
               <Button
                 type="button"
