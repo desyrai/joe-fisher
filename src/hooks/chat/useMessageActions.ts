@@ -102,33 +102,36 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
     }
     
     const actualIndex = messages.length - 1 - lastAssistantIndex;
-    const messageToRegenerate = messages[actualIndex];
-    
-    // Create a copy of messages up to but not including the message to regenerate
-    const messagesToSend = messages.slice(0, actualIndex);
     
     try {
       setIsLoading(true);
       
+      // Create a copy of messages up to but not including the message to regenerate
+      const messagesToSend = messages.slice(0, actualIndex);
+      
       const response = await generateChatCompletion(messagesToSend);
       
       // Update the messages array with the new response
-      const updatedMessages = [...messages];
+      setMessages(prevMessages => {
+        const updatedMessages = [...prevMessages];
+        
+        // Initialize regenerations array if it doesn't exist
+        if (!updatedMessages[actualIndex].regenerations) {
+          updatedMessages[actualIndex].regenerations = [];
+        }
+        
+        // Store the current content in regenerations
+        updatedMessages[actualIndex].regenerations!.push(
+          updatedMessages[actualIndex].content
+        );
+        
+        // Update the current message with the new response
+        updatedMessages[actualIndex].content = response;
+        
+        return updatedMessages;
+      });
       
-      // Initialize regenerations array if it doesn't exist
-      if (!updatedMessages[actualIndex].regenerations) {
-        updatedMessages[actualIndex].regenerations = [];
-      }
-      
-      // Store the current content in regenerations
-      updatedMessages[actualIndex].regenerations!.push(
-        updatedMessages[actualIndex].content
-      );
-      
-      // Update the current message with the new response
-      updatedMessages[actualIndex].content = response;
-      
-      setMessages(updatedMessages);
+      toast.success("Response regenerated");
     } catch (error) {
       console.error("Error regenerating response:", error);
       toast.error("Failed to regenerate response. Please try again.");

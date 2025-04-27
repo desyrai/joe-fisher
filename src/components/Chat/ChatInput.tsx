@@ -90,9 +90,13 @@ const ChatInput = ({
           <Button
             type="button"
             variant="outline"
-            onClick={onRegenerate}
+            onClick={handleRegenerate}
             disabled={!hasMessages || isLoading}
-            className={`border-desyr-soft-gold/30 ${!hasMessages || isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-desyr-soft-gold/10 hover:text-desyr-deep-gold'}`}
+            className={`border-desyr-soft-gold/30 ${
+              !hasMessages || isLoading 
+                ? 'opacity-50 cursor-not-allowed' 
+                : 'hover:bg-desyr-soft-gold/10 hover:text-desyr-deep-gold'
+            }`}
           >
             <RefreshCw className="h-4 w-4 mr-2" />
             Regenerate
@@ -104,7 +108,7 @@ const ChatInput = ({
               variant="outline"
               onClick={handleContinue}
               disabled={isLoading}
-              className="border-desyr-soft-gold/30 hover:bg-desyr-soft-gold/10"
+              className="border-desyr-soft-gold/30 hover:bg-desyr-soft-gold/10 hover:text-desyr-deep-gold"
             >
               Continue
             </Button>
