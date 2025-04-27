@@ -1,8 +1,4 @@
-
-interface Message {
-  role: "user" | "assistant" | "system";
-  content: string;
-}
+import { Message } from "@/components/Chat/types";
 
 interface ChatCompletionRequest {
   messages: Message[];
@@ -39,8 +35,8 @@ export const getGroqApiKey = (): string | null => {
 export const generateChatCompletion = async (
   messages: Message[],
   model: string = TEMP_MODEL,
-  temperature: number = 0.7,
-  max_tokens: number = 1500
+  temperature: number = 0.2,
+  max_tokens: number = 75
 ): Promise<string> => {
   const apiKey = getGroqApiKey();
   
