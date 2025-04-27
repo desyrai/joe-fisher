@@ -1,7 +1,11 @@
+
 import { Message } from "@/components/Chat/types";
 
 interface ChatCompletionRequest {
-  messages: Message[];
+  messages: {
+    role: string;
+    content: string;
+  }[];
   model: string;
   temperature?: number;
   max_tokens?: number;
@@ -44,8 +48,14 @@ export const generateChatCompletion = async (
     throw new Error("Groq API key not set. Please set your API key.");
   }
 
+  // Format messages for the API by removing id and timestamp
+  const formattedMessages = messages.map(({ role, content }) => ({
+    role,
+    content,
+  }));
+
   const requestData: ChatCompletionRequest = {
-    messages,
+    messages: formattedMessages,
     model,
     temperature,
     max_tokens,
@@ -73,3 +83,4 @@ export const generateChatCompletion = async (
     throw error;
   }
 };
+
