@@ -42,6 +42,9 @@ const ChatMessage = ({ message, onRemember, onEdit, onRegenerate, characterAvata
     }
   };
   
+  // Show previous versions dropdown only if there are actual regenerations
+  const hasRegenerations = message.regenerations && message.regenerations.length > 0;
+  
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}>
       <div className={`flex ${isUser ? "flex-row-reverse" : "flex-row"} max-w-[80%]`}>
@@ -99,7 +102,7 @@ const ChatMessage = ({ message, onRemember, onEdit, onRegenerate, characterAvata
             )}
           </div>
           
-          {message.regenerations && message.regenerations.length > 0 && (
+          {hasRegenerations && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button 
@@ -107,12 +110,12 @@ const ChatMessage = ({ message, onRemember, onEdit, onRegenerate, characterAvata
                   size="sm" 
                   className="text-xs px-2 py-0 h-6 text-desyr-taupe flex items-center mt-1"
                 >
-                  {message.regenerations.length} previous version{message.regenerations.length !== 1 ? 's' : ''}
+                  {message.regenerations!.length} previous version{message.regenerations!.length !== 1 ? 's' : ''}
                   <ChevronDown className="h-3 w-3 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-64">
-                {message.regenerations.map((content, index) => (
+                {message.regenerations!.map((content, index) => (
                   <DropdownMenuItem 
                     key={index}
                     className="cursor-pointer"
@@ -140,7 +143,7 @@ const ChatMessage = ({ message, onRemember, onEdit, onRegenerate, characterAvata
                 {message.remembered ? "Remembered" : "Remember"}
               </Button>
 
-              {!isUser && (
+              {!isUser && onRegenerate && (
                 <Button
                   type="button"
                   size="sm"

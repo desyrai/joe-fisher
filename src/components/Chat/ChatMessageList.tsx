@@ -31,10 +31,13 @@ const ChatMessageList = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Find the last assistant message
-  const lastAssistantMessage = messages
-    .filter(msg => msg.role === "assistant" && msg.id !== "assistant-welcome")
-    .slice(-1)[0];
+  // Find all assistant messages that can be regenerated
+  const assistantMessages = messages
+    .filter(msg => msg.role === "assistant" && msg.id !== "assistant-welcome");
+  
+  // Get the last assistant message for regeneration
+  const lastAssistantMessage = assistantMessages.length > 0 ? 
+    assistantMessages[assistantMessages.length - 1] : null;
 
   return (
     <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">

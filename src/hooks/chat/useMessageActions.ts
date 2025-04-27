@@ -90,8 +90,9 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
         id: `assistant-${Date.now()}`,
         role: "assistant",
         content: response,
-        regenerations: [],
+        regenerations: [], // Initialize empty regenerations array
         timestamp: Date.now(),
+        isContinuation: !visibleText && !e, // Flag if this was generated via continue
       };
       
       setMessages((prevMessages) => [...prevMessages, newAssistantMessage]);

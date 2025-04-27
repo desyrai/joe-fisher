@@ -6,6 +6,7 @@ export interface Message {
   remembered?: boolean;
   regenerations?: string[];
   timestamp: number;
+  isContinuation?: boolean;
 }
 
 export interface ChatProps {
