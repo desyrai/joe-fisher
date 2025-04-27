@@ -29,6 +29,11 @@ const Chat = ({
     characterName,
     initialSystemMessage,
   });
+
+  // This function ensures regenerate doesn't affect the input field
+  const handleRegenerate = async () => {
+    await handleRegenerateLastMessage();
+  };
   
   useEffect(() => {
     initializeChat();
@@ -49,7 +54,7 @@ const Chat = ({
         isLoading={isLoading}
         onRemember={handleRemember}
         onEdit={handleEditMessage}
-        onRegenerate={handleRegenerateLastMessage}
+        onRegenerate={handleRegenerate}
         characterAvatar={characterAvatar}
       />
       
@@ -59,7 +64,7 @@ const Chat = ({
         isLoading={isLoading}
         onSubmit={handleSubmit}
         onContinue={handleContinue}
-        onRegenerate={handleRegenerateLastMessage}
+        onRegenerate={handleRegenerate}
         hasMessages={messages.some(m => m.role === "assistant" && m.id !== "assistant-welcome")}
       />
     </div>
