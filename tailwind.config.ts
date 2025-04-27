@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+                desyr: {
+                    'deep-gold': '#81571E',
+                    'soft-gold': '#B79347',
+                    'marble-white': '#DEDDDE',
+                    'pale-gold': '#CBB989',
+                    'taupe': '#A7967D',
+                }
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,12 +92,38 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+                'fade-in': {
+                    '0%': {
+                        opacity: '0',
+                    },
+                    '100%': {
+                        opacity: '1',
+                    },
+                },
+                'subtle-bounce': {
+                    '0%, 100%': {
+                        transform: 'translateY(0)',
+                    },
+                    '50%': {
+                        transform: 'translateY(-5px)',
+                    },
+                },
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
-			}
+				'accordion-up': 'accordion-up 0.2s ease-out',
+                'fade-in': 'fade-in 0.5s ease-out forwards',
+                'subtle-bounce': 'subtle-bounce 2s infinite ease-in-out',
+			},
+            backgroundImage: {
+                'marble': "url('/marble-bg.png')",
+                'marble-gold': "url('/marble-gold-bg.png')",
+            },
+            fontFamily: {
+                'playfair': ['Playfair Display', 'serif'],
+                'lato': ['Lato', 'sans-serif'],
+            },
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
