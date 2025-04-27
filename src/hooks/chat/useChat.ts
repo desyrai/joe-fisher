@@ -34,6 +34,20 @@ export const useChat = ({ characterName, initialSystemMessage }: UseChatProps) =
     setMessages(initialMessages);
   };
 
+  const handleMessageSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    
+    const currentInput = input.trim();
+    
+    // Clear input before sending to prevent it from re-appearing
+    setInput("");
+    
+    // Only proceed if there's actual input to send
+    if (currentInput) {
+      await handleSubmit(currentInput, e);
+    }
+  };
+
   const handleContinue = async () => {
     // We send an empty message to trigger a continuation
     try {
@@ -43,14 +57,19 @@ export const useChat = ({ characterName, initialSystemMessage }: UseChatProps) =
     }
   };
 
+  // This function ensures regenerate doesn't affect the input field
+  const handleRegenerate = async () => {
+    await handleRegenerateLastMessage();
+  };
+
   return {
     messages,
     input,
     setInput,
     isLoading,
-    handleSubmit: (e?: React.FormEvent) => handleSubmit(input, e),
+    handleSubmit: handleMessageSubmit,
     handleContinue,
-    handleRegenerateLastMessage,
+    handleRegenerateLastMessage: handleRegenerate,
     handleRemember,
     handleNewChat: () => handleNewChat(messages),
     handleEditMessage,
