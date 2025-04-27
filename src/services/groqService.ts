@@ -1,4 +1,3 @@
-
 import { Message } from "@/components/Chat/types";
 
 interface ChatCompletionRequest {
@@ -51,10 +50,18 @@ export const generateChatCompletion = async (
     throw new Error("Groq API key not set. Please set your API key.");
   }
 
-  const formattedMessages = messages.map(({ role, content }) => ({
-    role,
-    content,
-  }));
+  // Format messages for the API, keeping the system message and the last 6 messages for context
+  let formattedMessages = [];
+  
+  // Always include system messages first
+  const systemMessages = messages.filter(msg => msg.role === "system");
+  formattedMessages.push(...systemMessages.map(({ role, content }) => ({ role, content })));
+  
+  // Get recent conversation history (excluding system messages)
+  const conversationMessages = messages.filter(msg => msg.role !== "system");
+  const recentMessages = conversationMessages.slice(-6); // Keep last 6 messages for context
+  
+  formattedMessages.push(...recentMessages.map(({ role, content }) => ({ role, content })));
 
   const requestData: ChatCompletionRequest = {
     messages: formattedMessages,
@@ -88,4 +95,3 @@ export const generateChatCompletion = async (
     throw error;
   }
 };
-

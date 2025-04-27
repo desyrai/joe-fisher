@@ -11,9 +11,6 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
   const handleSubmit = async (input: string, e?: React.FormEvent) => {
     e?.preventDefault();
     
-    // Filter out remembered messages to include in context
-    const rememberedMessages = messages.filter(msg => msg.remembered);
-    
     // Allow empty input for the continue functionality
     if (!input.trim() && e) return;
     
@@ -43,10 +40,16 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
     
     try {
       setIsLoading(true);
-      const messagesToSend = [
-        ...rememberedMessages,
-        ...messages.filter(msg => msg.role === "system")
-      ];
+      
+      // Prepare messages for API call with proper context
+      // Get system messages for context and instructions
+      const systemMessages = messages.filter(msg => msg.role === "system");
+      
+      // Get all user and assistant messages to maintain conversation flow
+      const conversationMessages = messages.filter(msg => msg.role !== "system");
+      
+      // Combine all messages to send
+      let messagesToSend = [...systemMessages, ...conversationMessages];
       
       if (instructions) {
         messagesToSend.push({
@@ -114,12 +117,12 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
     try {
       setIsLoading(true);
       
-      // Create a copy of messages to send for context, including system messages and remembered messages
-      // Plus all messages leading up to but not including the message to regenerate
-      const messagesToSend = [
-        ...messages.filter(msg => msg.role === "system" || msg.remembered),
-        ...messages.slice(0, actualIndex).filter(msg => msg.role !== "system" && !msg.remembered)
-      ];
+      // Create a copy of all messages to send for context up to the message to regenerate
+      // Include all system messages, then all conversation messages up to the one being regenerated
+      const systemMessages = messages.filter(msg => msg.role === "system");
+      const conversationMessages = messages.slice(0, actualIndex).filter(msg => msg.role !== "system");
+      
+      const messagesToSend = [...systemMessages, ...conversationMessages];
       
       console.log("Messages to send for regeneration:", messagesToSend);
       
