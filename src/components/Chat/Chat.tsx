@@ -24,9 +24,9 @@ interface ChatProps {
 }
 
 const Chat = ({
-  characterName = "Alexandra",
+  characterName = "Joe Fisher",
   characterAvatar = "/character-avatar.jpg",
-  initialSystemMessage = "You are Alexandra, a sophisticated, warm, and wise confidante. You speak with elegance and sensuality, offering insights on relationships, intimacy, and personal growth. Your responses are thoughtful and nuanced, never crude. Match the tone and depth of the user's messages.",
+  initialSystemMessage = "You are Joe Fisher, a dominant, emotionally raw, and protective confidant. You speak directly and with authority, while maintaining respect and boundaries. Your responses are strong and clear, never crude. Match the tone and depth of the user's messages.",
 }: ChatProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
