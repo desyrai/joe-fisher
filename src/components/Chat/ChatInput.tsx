@@ -2,7 +2,7 @@
 import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Italic, RefreshCw } from "lucide-react";
+import { Send, Italic } from "lucide-react";
 
 interface ChatInputProps {
   input: string;
@@ -20,7 +20,6 @@ const ChatInput = ({
   isLoading,
   onSubmit,
   onContinue,
-  onRegenerate,
   hasMessages
 }: ChatInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -34,10 +33,6 @@ const ChatInput = ({
 
   const handleContinue = () => {
     onContinue();
-  };
-
-  const handleRegenerate = () => {
-    onRegenerate();
   };
 
   const insertItalics = () => {
@@ -86,42 +81,25 @@ const ChatInput = ({
           </Button>
         </div>
         
-        <div className="flex justify-between space-x-2">
+        <div className="flex justify-end space-x-2">
           <Button
             type="button"
             variant="outline"
-            onClick={handleRegenerate}
-            disabled={!hasMessages || isLoading}
-            className={`border-desyr-soft-gold/30 ${
-              !hasMessages || isLoading 
-                ? 'opacity-50 cursor-not-allowed' 
-                : 'hover:bg-desyr-soft-gold/10 hover:text-desyr-deep-gold'
-            }`}
+            onClick={handleContinue}
+            disabled={isLoading}
+            className="border-desyr-soft-gold/30 hover:bg-desyr-soft-gold/10 hover:text-desyr-deep-gold"
           >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Regenerate
+            Continue
           </Button>
           
-          <div className="flex space-x-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleContinue}
-              disabled={isLoading}
-              className="border-desyr-soft-gold/30 hover:bg-desyr-soft-gold/10 hover:text-desyr-deep-gold"
-            >
-              Continue
-            </Button>
-            
-            <Button 
-              type="submit" 
-              disabled={isLoading || !input.trim()} 
-              className="gold-button"
-            >
-              <Send className="h-4 w-4 mr-2" />
-              Send
-            </Button>
-          </div>
+          <Button 
+            type="submit" 
+            disabled={isLoading || !input.trim()} 
+            className="gold-button"
+          >
+            <Send className="h-4 w-4 mr-2" />
+            Send
+          </Button>
         </div>
       </form>
     </div>

@@ -1,3 +1,4 @@
+
 import { RefreshCw, Bookmark, Edit, SkipForward, Check, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Message } from "./types";
@@ -33,6 +34,12 @@ const ChatMessage = ({ message, onRemember, onEdit, onRegenerate, characterAvata
 
   const handleSelectPreviousVersion = (content: string) => {
     onEdit(content);
+  };
+
+  const handleRegenerate = () => {
+    if (onRegenerate) {
+      onRegenerate();
+    }
   };
   
   return (
@@ -133,12 +140,12 @@ const ChatMessage = ({ message, onRemember, onEdit, onRegenerate, characterAvata
                 {message.remembered ? "Remembered" : "Remember"}
               </Button>
 
-              {!isUser && onRegenerate && (
+              {!isUser && (
                 <Button
                   type="button"
                   size="sm"
                   variant="ghost"
-                  onClick={onRegenerate}
+                  onClick={handleRegenerate}
                   className="text-xs px-2 py-0 h-6 text-desyr-taupe hover:text-desyr-deep-gold hover:bg-desyr-soft-gold/10"
                 >
                   <RefreshCw className="h-3 w-3 mr-1" />

@@ -107,10 +107,13 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
     try {
       setIsLoading(true);
       
-      // Create a copy of messages up to but not including the message to regenerate
-      const messagesToSend = messages.slice(0, actualIndex);
+      // Create a copy of messages to send for context, including system messages and messages before the one being regenerated
+      const messagesToSend = [
+        ...messages.filter(msg => msg.role === "system" || msg.remembered),
+        ...messages.slice(0, actualIndex).filter(msg => msg.role !== "system" && !msg.remembered)
+      ];
       
-      console.log("Messages to send:", messagesToSend);
+      console.log("Messages to send for regeneration:", messagesToSend);
       
       const response = await generateChatCompletion(messagesToSend);
       
