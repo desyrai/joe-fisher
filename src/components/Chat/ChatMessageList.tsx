@@ -9,7 +9,7 @@ interface ChatMessageListProps {
   isLoading: boolean;
   onRemember: (messageId: string) => void;
   onEdit: (messageId: string, content: string) => void;
-  onContinue?: () => void;
+  onRegenerate: () => void;
   characterAvatar?: string;
 }
 
@@ -18,7 +18,7 @@ const ChatMessageList = ({
   isLoading,
   onRemember,
   onEdit,
-  onContinue,
+  onRegenerate,
   characterAvatar
 }: ChatMessageListProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -45,7 +45,7 @@ const ChatMessageList = ({
             message={message}
             onRemember={() => onRemember(message.id)}
             onEdit={(content) => onEdit(message.id, content)}
-            onContinue={message === lastAssistantMessage ? onContinue : undefined}
+            onRegenerate={message === lastAssistantMessage ? onRegenerate : undefined}
             characterAvatar={characterAvatar}
           />
         ))}
@@ -67,3 +67,4 @@ const ChatMessageList = ({
 };
 
 export default ChatMessageList;
+

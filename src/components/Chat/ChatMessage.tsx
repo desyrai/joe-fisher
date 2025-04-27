@@ -1,27 +1,21 @@
-
+import { RefreshCw, Bookmark, Edit, SkipForward, Check, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Message } from "./types";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bookmark, Edit, SkipForward, Check, X, ChevronDown } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import ReactMarkdown from "react-markdown";
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
 
 interface ChatMessageProps {
   message: Message;
   onRemember: () => void;
   onEdit: (newContent: string) => void;
-  onContinue?: () => void;
+  onRegenerate?: () => void;
   characterAvatar?: string;
 }
 
-const ChatMessage = ({ message, onRemember, onEdit, onContinue, characterAvatar }: ChatMessageProps) => {
+const ChatMessage = ({ message, onRemember, onEdit, onRegenerate, characterAvatar }: ChatMessageProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
   
@@ -35,12 +29,6 @@ const ChatMessage = ({ message, onRemember, onEdit, onContinue, characterAvatar 
   const handleCancelEdit = () => {
     setEditContent(message.content);
     setIsEditing(false);
-  };
-  
-  const handleContinue = () => {
-    if (onContinue) {
-      onContinue();
-    }
   };
 
   const handleSelectPreviousVersion = (content: string) => {
@@ -145,16 +133,16 @@ const ChatMessage = ({ message, onRemember, onEdit, onContinue, characterAvatar 
                 {message.remembered ? "Remembered" : "Remember"}
               </Button>
 
-              {!isUser && onContinue && (
+              {!isUser && onRegenerate && (
                 <Button
                   type="button"
                   size="sm"
                   variant="ghost"
-                  onClick={handleContinue}
-                  className="text-xs px-2 py-0 h-6 text-desyr-taupe"
+                  onClick={onRegenerate}
+                  className="text-xs px-2 py-0 h-6 text-desyr-taupe hover:text-desyr-deep-gold hover:bg-desyr-soft-gold/10"
                 >
-                  <SkipForward className="h-3 w-3 mr-1" />
-                  Continue
+                  <RefreshCw className="h-3 w-3 mr-1" />
+                  Regenerate
                 </Button>
               )}
               
