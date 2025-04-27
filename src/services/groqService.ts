@@ -9,6 +9,9 @@ interface ChatCompletionRequest {
   model: string;
   temperature?: number;
   max_tokens?: number;
+  top_p?: number;
+  frequency_penalty?: number;
+  presence_penalty?: number;
 }
 
 interface ChatCompletionResponse {
@@ -39,8 +42,8 @@ export const getGroqApiKey = (): string | null => {
 export const generateChatCompletion = async (
   messages: Message[],
   model: string = TEMP_MODEL,
-  temperature: number = 0.2,
-  max_tokens: number = 75
+  temperature: number = 1.2,
+  max_tokens: number = 100,
 ): Promise<string> => {
   const apiKey = getGroqApiKey();
   
@@ -48,7 +51,6 @@ export const generateChatCompletion = async (
     throw new Error("Groq API key not set. Please set your API key.");
   }
 
-  // Format messages for the API by removing id and timestamp
   const formattedMessages = messages.map(({ role, content }) => ({
     role,
     content,
@@ -59,6 +61,9 @@ export const generateChatCompletion = async (
     model,
     temperature,
     max_tokens,
+    top_p: 0.95,
+    frequency_penalty: 0.2,
+    presence_penalty: 0.5,
   };
 
   try {
