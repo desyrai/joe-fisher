@@ -65,7 +65,7 @@ const ChatPage = () => {
       <div className="h-full flex-1 marble-card m-0 sm:m-4 md:m-8 rounded-none sm:rounded-xl overflow-hidden">
         <Chat 
           characterName="Joe Fisher" 
-          characterAvatar="/character-avatar.jpg" 
+          characterAvatar="/lovable-uploads/759049ef-1d51-4aa0-b13c-87d10408dcb5.png"
         />
       </div>
     </div>
