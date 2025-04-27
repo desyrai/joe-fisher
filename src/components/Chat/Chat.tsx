@@ -1,9 +1,10 @@
+
 import { useEffect, useState } from "react";
 import ChatHeader from "./ChatHeader";
 import ChatMessageList from "./ChatMessageList";
 import ChatInput from "./ChatInput";
 import { ChatProps } from "./types";
-import { useChat } from "@/hooks/useChat";
+import { useChat } from "@/hooks/chat/useChat";
 
 const Chat = ({
   characterName = "Joe Fisher",
