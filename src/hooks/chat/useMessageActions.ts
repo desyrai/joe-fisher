@@ -91,6 +91,7 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
   };
 
   const handleRegenerateLastMessage = async () => {
+    console.log("Regenerating last message...");
     // Find the last assistant message (excluding the welcome message)
     const lastAssistantIndex = [...messages].reverse().findIndex(
       (msg) => msg.role === "assistant" && msg.id !== "assistant-welcome"
@@ -108,6 +109,8 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
       
       // Create a copy of messages up to but not including the message to regenerate
       const messagesToSend = messages.slice(0, actualIndex);
+      
+      console.log("Messages to send:", messagesToSend);
       
       const response = await generateChatCompletion(messagesToSend);
       
