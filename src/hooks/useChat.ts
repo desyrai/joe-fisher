@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { generateChatCompletion } from "@/services/groqService";
 import { toast } from "sonner";
@@ -162,7 +163,7 @@ export const useChat = ({ characterName, initialSystemMessage }: UseChatProps) =
       (msg) => msg.remembered || msg.role === "system"
     );
     
-    const newMessages = [
+    const newMessages: Message[] = [
       ...rememberedMessages,
       {
         id: `assistant-welcome-${Date.now()}`,
