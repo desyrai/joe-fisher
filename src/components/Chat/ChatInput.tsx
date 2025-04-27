@@ -33,8 +33,11 @@ const ChatInput = ({
   };
 
   const handleContinue = () => {
-    // We call onContinue directly with no input
     onContinue();
+  };
+
+  const handleRegenerate = () => {
+    onRegenerate();
   };
 
   const insertItalics = () => {
@@ -87,7 +90,7 @@ const ChatInput = ({
           <Button
             type="button"
             variant="outline"
-            onClick={onRegenerate}
+            onClick={handleRegenerate}
             disabled={isLoading || !hasMessages}
             className="border-desyr-soft-gold/30 hover:bg-desyr-soft-gold/10"
           >

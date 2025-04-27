@@ -91,6 +91,7 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
   };
 
   const handleRegenerateLastMessage = async () => {
+    // Find the last assistant message (excluding the welcome message)
     const lastAssistantIndex = [...messages].reverse().findIndex(
       (msg) => msg.role === "assistant" && msg.id !== "assistant-welcome"
     );
@@ -100,11 +101,15 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
     const actualIndex = messages.length - 1 - lastAssistantIndex;
     const messageToRegenerate = messages[actualIndex];
     
+    // Create updatedMessages array
     const updatedMessages = [...messages];
+    
+    // Initialize the regenerations array if it doesn't exist
     if (!updatedMessages[actualIndex].regenerations) {
       updatedMessages[actualIndex].regenerations = [];
     }
     
+    // Store the current content in regenerations
     updatedMessages[actualIndex].regenerations!.push(
       updatedMessages[actualIndex].content
     );
@@ -113,17 +118,20 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
     
     try {
       setIsLoading(true);
-      // Fix: Use the complete Message objects without mapping and removing properties
+      
+      // Get all messages up to the one we're regenerating
       const messagesToSend = messages.slice(0, actualIndex);
       
+      // Generate a new response
       const response = await generateChatCompletion(messagesToSend);
       
+      // Update the message with the new response
       const finalMessages = [...updatedMessages];
       finalMessages[actualIndex].content = response;
       setMessages(finalMessages);
     } catch (error) {
       console.error("Error regenerating response:", error);
-      toast.error("Failed to generate response. Please try again.");
+      toast.error("Failed to regenerate response. Please try again.");
     } finally {
       setIsLoading(false);
     }

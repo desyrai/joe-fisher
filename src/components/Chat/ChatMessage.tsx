@@ -4,8 +4,14 @@ import { Message } from "./types";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bookmark, Edit, SkipForward, Check, X } from "lucide-react";
+import { Bookmark, Edit, SkipForward, Check, X, ChevronDown } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 
 interface ChatMessageProps {
   message: Message;
@@ -35,6 +41,10 @@ const ChatMessage = ({ message, onRemember, onEdit, onContinue, characterAvatar 
     if (onContinue) {
       onContinue();
     }
+  };
+
+  const handleSelectPreviousVersion = (content: string) => {
+    onEdit(content);
   };
   
   return (
@@ -95,9 +105,29 @@ const ChatMessage = ({ message, onRemember, onEdit, onContinue, characterAvatar 
           </div>
           
           {message.regenerations && message.regenerations.length > 0 && (
-            <div className="text-xs text-desyr-taupe mt-1">
-              {message.regenerations.length} previous version{message.regenerations.length !== 1 ? 's' : ''}
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-xs px-2 py-0 h-6 text-desyr-taupe flex items-center mt-1"
+                >
+                  {message.regenerations.length} previous version{message.regenerations.length !== 1 ? 's' : ''}
+                  <ChevronDown className="h-3 w-3 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-64">
+                {message.regenerations.map((content, index) => (
+                  <DropdownMenuItem 
+                    key={index}
+                    className="cursor-pointer"
+                    onClick={() => handleSelectPreviousVersion(content)}
+                  >
+                    {content.length > 30 ? `${content.substring(0, 30)}...` : content}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
           
           <div className={`flex mt-1 ${isUser ? "justify-end" : "justify-start"}`}>
