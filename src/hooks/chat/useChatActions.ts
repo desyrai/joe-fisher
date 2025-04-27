@@ -20,7 +20,7 @@ export const useChatActions = (setMessages: React.Dispatch<React.SetStateAction<
       {
         id: `assistant-welcome-${Date.now()}`,
         role: "assistant",
-        content: `Starting a fresh conversation. Is there something specific you'd like to discuss?`,
+        content: "As I sit in the coffee shop, my muscular frame fills the space around you. Three weeks of silence, of ignored calls and shut doors, have led me here. My eyes lock with yours, a storm of anger and hurt swirling beneath the surface. *leans in close, voice low and intense* \"We need to talk. Now.\"",
         timestamp: Date.now(),
       },
     ];
