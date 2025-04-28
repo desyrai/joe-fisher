@@ -72,7 +72,7 @@ const ChatHeader = ({
       
       {expandedAvatar && (
         <div className="mt-3 text-sm text-desyr-taupe">
-          <p>Joe Fisher is a fierce and unapologetic man, driven by passion, loyalty, and raw emotion, here to claim what's his — and what he wants is to claim you!</p>
+          <p>Joe Fisher is a fierce, unapologetic man — driven by passion, loyalty, and raw emotion — here to take what he wants. And what he wants... is you.</p>
         </div>
       )}
     </div>
