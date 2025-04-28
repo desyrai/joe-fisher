@@ -41,8 +41,8 @@ export const getGroqApiKey = (): string | null => {
 export const generateChatCompletion = async (
   messages: Message[],
   model: string = TEMP_MODEL,
-  temperature: number = 0.7,
-  max_tokens: number = 100,
+  temperature: number = 0.8,
+  max_tokens: number = 150,
 ): Promise<string> => {
   const apiKey = getGroqApiKey();
   
@@ -60,26 +60,24 @@ export const generateChatCompletion = async (
   // Get conversation history (excluding system messages)
   const conversationMessages = messages.filter(msg => msg.role !== "system");
   
-  // Add a special system message reminding about continuity with the previous messages
+  // Add a simple continuity reminder that's less restrictive
   if (conversationMessages.length > 0) {
-    // Find the last two assistant messages for continuity context
     const lastAssistantMessages = conversationMessages
       .filter(msg => msg.role === "assistant")
       .slice(-2);
     
     if (lastAssistantMessages.length > 0) {
-      let continuityPrompt = "IMPORTANT: Maintain continuity with your previous actions. ";
+      let continuityPrompt = "Remember the physical positioning and emotional state from your previous messages. ";
       
-      lastAssistantMessages.forEach(msg => {
-        // Extract physical actions from the previous messages using regex
-        const physicalActionMatches = msg.content.match(/\*(.*?)\*/g);
-        if (physicalActionMatches && physicalActionMatches.length > 0) {
-          continuityPrompt += "In your previous messages you were physically: " + 
-            physicalActionMatches.join(" then ") + ". ";
-        }
-      });
+      const physicalActionMatches = lastAssistantMessages.map(msg => {
+        const matches = msg.content.match(/\*(.*?)\*/g);
+        return matches ? matches[0] : "";
+      }).filter(Boolean);
       
-      continuityPrompt += "Make sure your next actions flow naturally from this physical position.";
+      if (physicalActionMatches.length > 0) {
+        continuityPrompt += "Your last physical actions were: " + 
+          physicalActionMatches.join(" then ") + ". ";
+      }
       
       formattedMessages.push({
         role: "system",
@@ -88,8 +86,8 @@ export const generateChatCompletion = async (
     }
   }
   
-  // Keep all conversation messages for better context, up to a reasonable limit
-  const recentMessages = conversationMessages.slice(-8); // Increased from 6 to 8 for better context
+  // Keep all conversation messages for better context
+  const recentMessages = conversationMessages.slice(-8);
   formattedMessages.push(...recentMessages.map(({ role, content }) => ({ role, content })));
 
   const requestData: ChatCompletionRequest = {
@@ -97,9 +95,9 @@ export const generateChatCompletion = async (
     model,
     temperature,
     max_tokens,
-    top_p: 0.9,
-    frequency_penalty: 0.3,
-    presence_penalty: 0.5,
+    top_p: 0.95,
+    frequency_penalty: 0.2,
+    presence_penalty: 0.2,
   };
 
   try {
