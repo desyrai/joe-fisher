@@ -36,9 +36,9 @@ const Chat = ({
 
   return (
     <div className="flex flex-col h-full relative">
-      {/* Floating Avatar */}
-      <div className="floating-avatar absolute top-0 left-1/2 transform -translate-x-1/2 z-10 mt-4 hidden md:block">
-        <div className="w-24 h-24 rounded-full border-2 border-desyr-soft-gold shadow-lg overflow-hidden">
+      {/* Floating Avatar - visible on medium screens and up */}
+      <div className="hidden md:block">
+        <div className="floating-avatar">
           <img 
             src={characterAvatar} 
             alt={characterName}

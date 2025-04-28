@@ -19,7 +19,7 @@ const ChatHeader = ({
   onNewChat,
 }: ChatHeaderProps) => {
   return (
-    <div className="border-b border-desyr-soft-gold/20 p-4 md:pt-[5.5rem]">
+    <div className="border-b border-desyr-soft-gold/20 p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div
