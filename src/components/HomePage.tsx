@@ -19,7 +19,7 @@ const HomePage = () => {
           
           <div className="prose prose-lg max-w-2xl mx-auto mb-8">
             <p className="text-center text-desyr-taupe">
-              Welcome to Desyr.ai — your private, elegant sanctuary where women can explore longing, connection, and emotion freely, in a space designed for depth, intimacy, and true desire.
+              Welcome to your private sanctuary — a space where you can explore longing, connection, and emotion in a sophisticated, elegant environment designed specifically for women who crave depth, intimacy, and true desire.
             </p>
           </div>
           
