@@ -8,20 +8,20 @@ const HomePage = () => {
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 text-center">
         <div className="max-w-3xl mx-auto animate-fade-in">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-playfair gold-gradient mb-6">
-            Desyr
+            Desyr.ai
           </h1>
           
           <p className="text-lg md:text-xl text-desyr-taupe mb-6 font-light">
-            Your intimate space for meaningful connection
+            Your private sanctuary for connection and desire.
           </p>
           
           <hr className="w-24 mx-auto border-desyr-soft-gold/30 my-6" />
           
           <div className="prose prose-lg max-w-2xl mx-auto mb-8">
             <p className="text-center text-desyr-taupe">
-              Welcome to a private sanctuary where you can explore thoughts, desires, and emotions 
-              in a sophisticated, elegant environment designed specifically for women who value
-              depth and connection.
+              Welcome to Desyr.ai — your private space to explore longing, connection, and emotion 
+              in an elegant, sophisticated sanctuary created for women who crave depth, intimacy, 
+              and the freedom to feel.
             </p>
           </div>
           
