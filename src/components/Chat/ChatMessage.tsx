@@ -51,7 +51,7 @@ const ChatMessage = ({ message, onRemember, onEdit, onRegenerate, characterAvata
         {!isUser && (
           <div className="mr-2 mt-1">
             <Avatar className="h-16 w-16 border border-desyr-soft-gold/30">
-              <AvatarImage src={characterAvatar} alt="Character" />
+              <AvatarImage src={characterAvatar} alt="Character" className="object-cover" />
               <AvatarFallback className="bg-desyr-deep-gold text-white">AI</AvatarFallback>
             </Avatar>
           </div>
