@@ -19,9 +19,7 @@ const HomePage = () => {
           
           <div className="prose prose-lg max-w-2xl mx-auto mb-8">
             <p className="text-center text-desyr-taupe">
-              Welcome to Desyr.ai — your private space to explore longing, connection, and emotion 
-              in an elegant, sophisticated sanctuary created for women who crave depth, intimacy, 
-              and the freedom to feel.
+              Welcome to Desyr.ai — your private, elegant sanctuary where women can explore longing, connection, and emotion freely, in a space designed for depth, intimacy, and true desire.
             </p>
           </div>
           
@@ -34,7 +32,7 @@ const HomePage = () => {
       </div>
       
       <footer className="w-full py-4 text-center text-sm text-desyr-taupe border-t border-desyr-soft-gold/10">
-        <p>&copy; {new Date().getFullYear()} Desyr.ai — Your intimate digital companion</p>
+        <p>&copy; {new Date().getFullYear()} Desyr.ai — Where intimacy becomes a conversation</p>
       </footer>
     </div>
   );
