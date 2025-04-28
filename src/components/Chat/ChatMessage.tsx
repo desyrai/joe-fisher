@@ -50,7 +50,7 @@ const ChatMessage = ({ message, onRemember, onEdit, onRegenerate, characterAvata
       <div className={`flex ${isUser ? "flex-row-reverse" : "flex-row"} max-w-[80%]`}>
         {!isUser && (
           <div className="mr-2 mt-1">
-            <Avatar className="h-8 w-8 border border-desyr-soft-gold/30">
+            <Avatar className="h-16 w-16 border border-desyr-soft-gold/30">
               <AvatarImage src={characterAvatar} alt="Character" />
               <AvatarFallback className="bg-desyr-deep-gold text-white">AI</AvatarFallback>
             </Avatar>
