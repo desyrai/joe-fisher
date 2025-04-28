@@ -8,7 +8,7 @@ import { useChat } from "@/hooks/chat/useChat";
 
 const Chat = ({
   characterName = "Joe Fisher",
-  characterAvatar = "/character-avatar.jpg",
+  characterAvatar = "/lovable-uploads/759049ef-1d51-4aa0-b13c-87d10408dcb5.png",
   initialSystemMessage = "You are Joe Fisher, a dominant, emotionally raw, and protective confidant. You speak directly and with authority, while maintaining respect and boundaries. Your responses are strong and clear, never crude. Match the tone and depth of the user's messages.",
 }: ChatProps) => {
   const [expandedAvatar, setExpandedAvatar] = useState(false);
@@ -35,7 +35,18 @@ const Chat = ({
   }, [initialSystemMessage, characterName]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative">
+      {/* Floating Avatar */}
+      <div className="floating-avatar absolute top-0 left-1/2 transform -translate-x-1/2 z-10 mt-4 hidden md:block">
+        <div className="w-24 h-24 rounded-full border-2 border-desyr-soft-gold shadow-lg overflow-hidden">
+          <img 
+            src={characterAvatar} 
+            alt={characterName}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+      
       <ChatHeader 
         characterName={characterName}
         characterAvatar={characterAvatar}

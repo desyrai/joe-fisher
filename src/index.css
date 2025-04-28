@@ -78,4 +78,21 @@
   .chat-bubble-ai {
     @apply bg-gradient-to-r from-desyr-pale-gold/10 to-desyr-soft-gold/10 p-4 rounded-tl-xl rounded-bl-xl rounded-br-xl mb-2 shadow-sm border border-desyr-soft-gold/20;
   }
+  
+  .floating-avatar {
+    position: fixed;
+    z-index: 50;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    animation: subtle-float 3s ease-in-out infinite alternate;
+  }
+  
+  @keyframes subtle-float {
+    0% {
+      transform: translateY(0) translateX(-50%);
+    }
+    100% {
+      transform: translateY(-5px) translateX(-50%);
+    }
+  }
 }

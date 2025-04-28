@@ -19,11 +19,11 @@ const ChatHeader = ({
   onNewChat,
 }: ChatHeaderProps) => {
   return (
-    <div className="border-b border-desyr-soft-gold/20 p-4">
+    <div className="border-b border-desyr-soft-gold/20 p-4 md:pt-[5.5rem]">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div
-            className="cursor-pointer transition-transform duration-300"
+            className="cursor-pointer transition-transform duration-300 md:hidden"
             onClick={() => setExpandedAvatar(!expandedAvatar)}
           >
             <Avatar
@@ -72,7 +72,7 @@ const ChatHeader = ({
       
       {expandedAvatar && (
         <div className="mt-3 text-sm text-desyr-taupe">
-          <p>Alexandra is a sophisticated and experienced confidante, here to engage with you in deep, meaningful conversation.</p>
+          <p>Joe Fisher is a fierce and unapologetic man, driven by passion, loyalty, and raw emotion, here to claim what's his — and what he wants is to claim you!</p>
         </div>
       )}
     </div>
