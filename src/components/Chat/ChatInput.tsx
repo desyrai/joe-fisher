@@ -50,7 +50,8 @@ const ChatInput = ({
       setTimeout(() => {
         if (textareaRef.current) {
           textareaRef.current.focus();
-          const newPosition = start + selectedText.length + 2;
+          // Position cursor between the asterisks when no text is selected
+          const newPosition = start + (selectedText.length > 0 ? selectedText.length + 2 : 1);
           textareaRef.current.setSelectionRange(newPosition, newPosition);
         }
       }, 0);

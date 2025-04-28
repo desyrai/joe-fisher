@@ -94,7 +94,7 @@ const ChatMessage = ({ message, onRemember, onEdit, onRegenerate, characterAvata
                 className="prose prose-sm max-w-none"
                 components={{
                   p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
-                  em: ({node, ...props}) => <em className="text-desyr-deep-gold font-normal" {...props} />
+                  em: ({node, ...props}) => <em className="text-desyr-deep-gold font-normal not-italic" {...props} />
                 }}
               >
                 {message.content}
