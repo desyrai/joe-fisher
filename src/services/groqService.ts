@@ -24,7 +24,7 @@ interface ChatCompletionResponse {
 
 // In a real app, you'd securely store and access this
 let groqApiKey: string | null = null; 
-const TEMP_MODEL = "llama3-8b-8192";
+const TEMP_MODEL = "llama3-70b-8192";
 
 export const setGroqApiKey = (key: string) => {
   groqApiKey = key;
