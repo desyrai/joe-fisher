@@ -67,7 +67,7 @@ const ChatInput = ({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type your message... (use (( )) for instructions)"
+            placeholder="Type your message... (use ((your instructions)) for private directions to Joe)"
             className="min-h-[100px] pr-10 resize-none border-desyr-soft-gold/30"
             disabled={isLoading}
           />

@@ -7,7 +7,7 @@ export const processInstructions = (text: string) => {
   // Extract instructions
   let match;
   while ((match = instructionRegex.exec(text)) !== null) {
-    instructions.push(match[1]);
+    instructions.push(match[1].trim());
   }
   
   // Remove instructions from visible text

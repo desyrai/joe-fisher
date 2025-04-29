@@ -14,6 +14,7 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
     // Allow empty input for the continue functionality
     if (!input.trim() && e) return;
     
+    // Process the input to extract instructions and visible text
     const { visibleText, instructions } = processInstructions(input);
     
     // Only add a user message if there is visible text
@@ -26,16 +27,6 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
       };
       
       setMessages((prevMessages) => [...prevMessages, newUserMessage]);
-    }
-    
-    if (instructions) {
-      const instructionMessage: Message = {
-        id: `system-instruction-${Date.now()}`,
-        role: "system",
-        content: instructions,
-        timestamp: Date.now(),
-      };
-      setMessages((prevMessages) => [...prevMessages, instructionMessage]);
     }
     
     try {
@@ -59,11 +50,12 @@ export const useMessageActions = (messages: Message[], setMessages: React.Dispat
       // Combine all messages to send
       let messagesToSend: Message[] = [...systemMessages, enhancedSystemPrompt, ...conversationMessages];
       
+      // Add user instructions as a temporary system message if they exist
       if (instructions) {
         const sysInstruction: Message = {
           id: `system-temp-${Date.now()}`,
           role: "system",
-          content: instructions,
+          content: `TEMPORARY INSTRUCTION FOR THIS RESPONSE ONLY: ${instructions}. Follow this instruction naturally without explicitly acknowledging it.`,
           timestamp: Date.now(),
         };
         messagesToSend.push(sysInstruction);
