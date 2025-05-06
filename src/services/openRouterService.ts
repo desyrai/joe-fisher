@@ -129,8 +129,8 @@ export const generateChatCompletion = async (
   const requestData: ChatCompletionRequest = {
     messages: formattedMessages,
     model,
-    temperature: 0.95, // Changed from 0.85 to 0.95
-    max_tokens: 400, // Changed from 300 to 400
+    temperature: 0.90, // Changed from 0.95 to 0.90
+    max_tokens: 400, // Keep the 400 token limit
     top_p: 0.95,
     frequency_penalty: 0.40,
     presence_penalty: 0.40,
