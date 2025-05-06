@@ -21,4 +21,3 @@ export interface UserInfo {
   avatar?: string;
   bio?: string;
 }
-

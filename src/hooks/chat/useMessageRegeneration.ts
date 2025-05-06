@@ -50,15 +50,7 @@ export const useMessageRegeneration = (
       // For continuation messages, we need to make sure we have proper context
       let userPrompt: Message | null = null;
       
-      // If this was a continuation, we need to create a special prompt
-      if (lastAssistantMessage.isContinuation) {
-        userPrompt = {
-          id: `user-continue-regen-${Date.now()}`,
-          role: "user",
-          content: "Please continue",
-          timestamp: Date.now(),
-        };
-      } else if (lastUserIndex !== -1) {
+      if (lastUserIndex !== -1) {
         // For regular messages, include the last user message
         userPrompt = {
           id: `user-regen-${Date.now()}`,

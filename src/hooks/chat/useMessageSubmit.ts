@@ -39,16 +39,52 @@ export const useMessageSubmit = (
       
       const response = await generateChatCompletion(messagesToSend);
       
-      const newAssistantMessage: Message = {
-        id: `assistant-${Date.now()}`,
-        role: "assistant",
-        content: response,
-        regenerations: [], // Initialize empty regenerations array
-        timestamp: Date.now(),
-        isContinuation: !visibleText && !e, // Flag if this was generated via continue
-      };
+      // Check if this is a continuation (no visible text and not an event from form submission)
+      const isContinuation = !visibleText && !e;
       
-      setMessages((prevMessages) => [...prevMessages, newAssistantMessage]);
+      if (isContinuation) {
+        // For continuations, append to the last assistant message instead of creating a new one
+        setMessages((prevMessages) => {
+          // Find the last assistant message that's not the welcome message
+          const lastAssistantIndex = [...prevMessages]
+            .reverse()
+            .findIndex(msg => msg.role === "assistant" && msg.id !== "assistant-welcome");
+          
+          if (lastAssistantIndex === -1) {
+            // If no assistant message found (unlikely), create a new one
+            return [...prevMessages, {
+              id: `assistant-${Date.now()}`,
+              role: "assistant",
+              content: response,
+              regenerations: [],
+              timestamp: Date.now(),
+            }];
+          }
+          
+          // Get the actual index from the end
+          const actualIndex = prevMessages.length - 1 - lastAssistantIndex;
+          
+          // Create a new array with the updated message
+          const updatedMessages = [...prevMessages];
+          updatedMessages[actualIndex] = {
+            ...updatedMessages[actualIndex],
+            content: updatedMessages[actualIndex].content + "\n\n" + response, // Add line breaks for better formatting
+          };
+          
+          return updatedMessages;
+        });
+      } else {
+        // For regular exchanges, create a new message
+        const newAssistantMessage: Message = {
+          id: `assistant-${Date.now()}`,
+          role: "assistant",
+          content: response,
+          regenerations: [], // Initialize empty regenerations array
+          timestamp: Date.now(),
+        };
+        
+        setMessages((prevMessages) => [...prevMessages, newAssistantMessage]);
+      }
     } catch (error) {
       console.error("Error generating response:", error);
       toast.error("Failed to generate response. Please try again.");
@@ -127,20 +163,36 @@ const prepareMessagesForApi = (
     messagesToSend.push(sysInstruction);
   }
   
-  if (visibleText || isContinuation) {
-    const messageContent = visibleText || "Please continue";
+  // For continuation, add special continuation prompt
+  if (isContinuation) {
+    // Add specific continue instruction
+    const continueInstruction: Message = {
+      id: `system-continue-${Date.now()}`,
+      role: "system",
+      content: `Continue from your previous message naturally as if you're adding to the same thought. Maintain the same tone and emotional state. The user wants you to expand on what you just said.`,
+      timestamp: Date.now(),
+    };
+    messagesToSend.push(continueInstruction);
     
-    // Only add a user message to send if it's not a continuation with no text
-    if (visibleText || !messageContent.trim()) {
-      const userMsg: Message = {
-        id: `user-temp-${Date.now()}`,
-        role: "user",
-        content: messageContent,
-        timestamp: Date.now(),
-      };
-      messagesToSend.push(userMsg);
-    }
+    // Add continue prompt from user
+    const userMsg: Message = {
+      id: `user-temp-${Date.now()}`,
+      role: "user",
+      content: "Please continue",
+      timestamp: Date.now(),
+    };
+    messagesToSend.push(userMsg);
+  } else if (visibleText) {
+    // Add regular user message
+    const userMsg: Message = {
+      id: `user-temp-${Date.now()}`,
+      role: "user",
+      content: visibleText,
+      timestamp: Date.now(),
+    };
+    messagesToSend.push(userMsg);
   }
   
   return messagesToSend;
 };
+
