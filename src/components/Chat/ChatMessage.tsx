@@ -83,13 +83,13 @@ const ChatMessage = ({
           </div>
 
           {/* Right Column - Message Content */}
-          <div className="flex-1 p-8"> {/* Increased padding for better text display */}
+          <div className="flex-1 p-8 max-h-[800px] overflow-y-auto"> {/* Added max-height and overflow for very long messages */}
             {isEditing ? (
               <div className="space-y-2">
                 <Textarea
                   value={editContent}
                   onChange={(e) => setEditContent(e.target.value)}
-                  className="min-h-[200px] border-desyr-soft-gold/30 text-lg" /* Increased height and font size */
+                  className="min-h-[350px] border-desyr-soft-gold/30 text-lg" /* Increased height for longer texts */
                   autoFocus
                 />
                 <div className="flex justify-end space-x-2">
@@ -119,7 +119,7 @@ const ChatMessage = ({
                 className="prose prose-lg max-w-none prose-p:my-4" /* Increased font size and paragraph spacing */
                 components={{
                   p: ({node, ...props}) => <p className="mb-5 last:mb-0 text-lg" {...props} />, /* Larger text and spacing */
-                  em: ({node, ...props}) => <em className="text-desyr-deep-gold font-normal not-italic" {...props} />, /* Swapped: Now descriptive text (italics) is dark gold */
+                  em: ({node, ...props}) => <em className="text-desyr-deep-gold font-normal not-italic" {...props} />, /* Descriptive text (italics) is dark gold */
                   strong: ({node, ...props}) => <strong className="text-desyr-soft-gold" {...props} />, /* Color unchanged for strong text */
                   blockquote: ({node, ...props}) => (
                     <blockquote className="border-l-4 border-desyr-soft-gold/50 pl-4 italic text-desyr-deep-gold/80" {...props} />

@@ -64,7 +64,7 @@ export const useMessageRegeneration = (
       const continuityReminder: Message = {
         id: `system-continuity-regen-${Date.now()}`,
         role: "system",
-        content: "IMPORTANT: Maintain continuity with your previous physical positions and emotional state. Complete all thoughts and sentences. Keep your response under 75 words.",
+        content: "IMPORTANT: Maintain continuity with your previous physical positions and emotional state. Complete all thoughts and sentences. Write a detailed response (200-300 words) that includes both descriptive actions and dialogue. Create an immersive scene with emotional depth and sensory details.",
         timestamp: Date.now(),
       };
       
