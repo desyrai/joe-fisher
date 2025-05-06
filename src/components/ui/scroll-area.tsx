@@ -32,7 +32,7 @@ const ScrollBar = React.forwardRef<
     className={cn(
       "flex touch-none select-none transition-colors",
       orientation === "vertical" &&
-        "h-full w-3 border-l border-l-transparent p-[1px]", // Increased width for better visibility
+        "h-full w-3 border-l border-l-transparent p-[1px] bg-gray-50/5", // Added background for better visibility
       orientation === "horizontal" &&
         "h-2.5 flex-col border-t border-t-transparent p-[1px]",
       className
@@ -41,8 +41,8 @@ const ScrollBar = React.forwardRef<
   >
     <ScrollAreaPrimitive.ScrollAreaThumb 
       className={cn(
-        "relative flex-1 rounded-full",
-        orientation === "vertical" ? "bg-desyr-soft-gold/30 hover:bg-desyr-soft-gold/50" : "bg-border"
+        "relative flex-1 rounded-full opacity-90", // Increased opacity for better visibility
+        orientation === "vertical" ? "bg-desyr-soft-gold/70 hover:bg-desyr-soft-gold/90" : "bg-border"
       )} 
     />
   </ScrollAreaPrimitive.ScrollAreaScrollbar>

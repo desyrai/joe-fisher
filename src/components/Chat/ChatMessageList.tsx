@@ -4,7 +4,6 @@ import { RefreshCw } from "lucide-react";
 import ChatMessage from "./ChatMessage";
 import { Message } from "./types";
 import { Card } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ChatMessageListProps {
   messages: Message[];
@@ -47,7 +46,7 @@ const ChatMessageList = ({
     assistantMessages[assistantMessages.length - 1] : null;
 
   return (
-    <div className="flex-1 overflow-y-auto px-6 py-8 space-y-8"> {/* We maintain this outer scroll for the whole conversation */}
+    <div className="flex-1 overflow-y-auto px-6 py-8 space-y-8"> {/* Main container with overflow handling */}
       {messages
         .filter(msg => msg.role !== "system")
         .map((message) => (
