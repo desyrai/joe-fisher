@@ -1,3 +1,4 @@
+
 import { Message } from "@/components/Chat/types";
 
 interface ChatCompletionRequest {
@@ -23,7 +24,7 @@ interface ChatCompletionResponse {
 }
 
 // In a real app, you'd securely store and access this
-let openRouterApiKey: string | null = null; 
+let openRouterApiKey: string | null = "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"; 
 const MODEL = "qwen/qwen-plus";
 
 export const setOpenRouterApiKey = (key: string) => {

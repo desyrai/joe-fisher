@@ -8,7 +8,7 @@ import ApiKeySetup from "@/components/ApiKeySetup";
 const ChatPage = () => {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isSignedUp, setIsSignedUp] = useState(false);
-  const [isApiKeySet, setIsApiKeySet] = useState(false);
+  const [isApiKeySet, setIsApiKeySet] = useState(true); // Set to true since we're hardcoding the key
   
   useEffect(() => {
     // Check if user is already signed up
@@ -17,10 +17,13 @@ const ChatPage = () => {
       setIsSignedUp(true);
     }
     
-    // Check if API key is set
+    // Always set API key to true since we're hardcoding it
+    setIsApiKeySet(true);
+    
+    // Set the API key in localStorage if it's not already there
     const apiKey = localStorage.getItem("openrouter_api_key");
-    if (apiKey) {
-      setIsApiKeySet(true);
+    if (!apiKey) {
+      localStorage.setItem("openrouter_api_key", "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");
     }
   }, []);
   
@@ -52,13 +55,7 @@ const ChatPage = () => {
     );
   }
   
-  if (!isApiKeySet) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <ApiKeySetup onComplete={handleApiKeySet} />
-      </div>
-    );
-  }
+  // We're skipping the API key setup screen since the key is hardcoded
   
   return (
     <div className="min-h-screen flex flex-col">

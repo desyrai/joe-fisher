@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Message } from "@/components/Chat/types";
-import { generateChatCompletion } from "@/services/groqService";
+import { generateChatCompletion } from "@/services/openRouterService";
 import { toast } from "sonner";
 import { processInstructions } from "@/components/Chat/utils";
 
