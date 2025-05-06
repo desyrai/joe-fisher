@@ -4,7 +4,7 @@ import ChatHeader from "./ChatHeader";
 import ChatMessageList from "./ChatMessageList";
 import ChatInput from "./ChatInput";
 import PersonaSetup from "./PersonaSetup";
-import { ChatProps } from "./types";
+import { ChatProps, UserInfo } from "./types";
 import { useChat } from "@/hooks/chat/useChat";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
@@ -16,7 +16,7 @@ const Chat = ({
 }: ChatProps) => {
   const [expandedAvatar, setExpandedAvatar] = useState(false);
   const [showPersonaSetup, setShowPersonaSetup] = useState(false);
-  const [userInfo, setUserInfo] = useState({
+  const [userInfo, setUserInfo] = useState<UserInfo>({
     name: localStorage.getItem("user_name") || "You",
     avatar: localStorage.getItem("user_avatar") || "",
   });
