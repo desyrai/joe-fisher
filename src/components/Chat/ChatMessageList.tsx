@@ -46,7 +46,7 @@ const ChatMessageList = ({
     assistantMessages[assistantMessages.length - 1] : null;
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
+    <div className="flex-1 overflow-y-auto px-6 py-8 space-y-8"> {/* Increased padding and spacing */}
       {messages
         .filter(msg => msg.role !== "system")
         .map((message) => (
@@ -64,8 +64,8 @@ const ChatMessageList = ({
       {isLoading && (
         <Card className="p-4 border border-desyr-soft-gold/20 shadow-sm">
           <div className="flex items-center space-x-2">
-            <RefreshCw className="w-4 h-4 animate-spin text-desyr-deep-gold" />
-            <span className="text-desyr-taupe">Joe is typing...</span>
+            <RefreshCw className="w-5 h-5 animate-spin text-desyr-deep-gold" /> {/* Slightly larger icon */}
+            <span className="text-desyr-taupe text-lg">Joe is typing...</span> {/* Larger text */}
           </div>
         </Card>
       )}

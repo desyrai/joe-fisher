@@ -59,7 +59,7 @@ const ChatPage = () => {
   
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="h-full flex-1 marble-card m-0 sm:m-4 md:m-8 rounded-none sm:rounded-xl overflow-hidden">
+      <div className="h-full flex-1 marble-card m-0 sm:m-2 md:m-4 rounded-none sm:rounded-xl overflow-hidden"> {/* Reduced margins to use more screen space */}
         <Chat 
           characterName="Joe Fisher" 
           characterAvatar="/lovable-uploads/759049ef-1d51-4aa0-b13c-87d10408dcb5.png"

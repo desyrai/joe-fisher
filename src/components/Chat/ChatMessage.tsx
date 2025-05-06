@@ -64,32 +64,32 @@ const ChatMessage = ({
   };
 
   return (
-    <div className="mb-8">
+    <div className="mb-10"> {/* Increased bottom margin for better message separation */}
       <Card className="border border-desyr-soft-gold/20 shadow-sm">
         <div className="flex flex-col md:flex-row">
           {/* Left Column - Character Image and Name */}
-          <div className="p-4 flex flex-col items-center justify-start min-w-[150px] md:max-w-[200px] border-r border-desyr-soft-gold/20">
-            <Avatar className="h-40 w-32 border-2 border-desyr-soft-gold/30 mb-2"> {/* Updated dimensions for portrait style */}
+          <div className="p-6 flex flex-col items-center min-w-[280px] max-w-[300px] border-r border-desyr-soft-gold/20">
+            <Avatar className="w-full max-h-[350px] border-2 border-desyr-soft-gold/30 mb-4"> {/* Increased size and spacing */}
               <AvatarImage 
                 src={isUser ? (userInfo.avatar || "/placeholder.svg") : characterAvatar} 
                 alt={isUser ? userInfo.name : "Character"} 
                 className="object-cover" 
               />
-              <AvatarFallback className={`${isUser ? "bg-desyr-taupe" : "bg-desyr-deep-gold"} text-white`}>
+              <AvatarFallback className={`${isUser ? "bg-desyr-taupe" : "bg-desyr-deep-gold"} text-white text-2xl`}>
                 {isUser ? userInfo.name.charAt(0) : "JF"}
               </AvatarFallback>
             </Avatar>
-            <p className="text-center font-playfair text-lg mt-2">{isUser ? userInfo.name : "Joe Fisher"}</p>
+            <p className="text-center font-playfair text-xl mt-2">{isUser ? userInfo.name : "Joe Fisher"}</p>
           </div>
 
           {/* Right Column - Message Content */}
-          <div className="flex-1 p-4">
+          <div className="flex-1 p-8"> {/* Increased padding for better text display */}
             {isEditing ? (
               <div className="space-y-2">
                 <Textarea
                   value={editContent}
                   onChange={(e) => setEditContent(e.target.value)}
-                  className="min-h-[100px] border-desyr-soft-gold/30"
+                  className="min-h-[200px] border-desyr-soft-gold/30 text-lg" /* Increased height and font size */
                   autoFocus
                 />
                 <div className="flex justify-end space-x-2">
@@ -116,19 +116,22 @@ const ChatMessage = ({
               </div>
             ) : (
               <ReactMarkdown 
-                className="prose prose-sm max-w-none"
+                className="prose prose-lg max-w-none prose-p:my-4" /* Increased font size and paragraph spacing */
                 components={{
-                  p: ({node, ...props}) => <p className="mb-3 last:mb-0" {...props} />,
+                  p: ({node, ...props}) => <p className="mb-5 last:mb-0 text-lg" {...props} />, /* Larger text and spacing */
                   em: ({node, ...props}) => <em className="text-desyr-deep-gold font-normal not-italic" {...props} />,
-                  strong: ({node, ...props}) => <strong className="text-desyr-soft-gold" {...props} />
+                  strong: ({node, ...props}) => <strong className="text-desyr-soft-gold" {...props} />,
+                  blockquote: ({node, ...props}) => (
+                    <blockquote className="border-l-4 border-desyr-soft-gold/50 pl-4 italic text-desyr-deep-gold/80" {...props} />
+                  )
                 }}
               >
                 {formatMessageContent(message.content)}
               </ReactMarkdown>
             )}
 
-            {/* Message Controls */}
-            <div className="mt-4 flex justify-end space-x-2">
+            {/* Message Controls - moved to bottom with more spacing */}
+            <div className="mt-6 flex justify-end space-x-2 border-t border-desyr-soft-gold/10 pt-3">
               <Button
                 type="button"
                 size="sm"

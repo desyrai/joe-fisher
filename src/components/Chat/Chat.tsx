@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import ChatHeader from "./ChatHeader";
 import ChatMessageList from "./ChatMessageList";
@@ -50,7 +51,7 @@ const Chat = ({
   }, [userInfo]);
 
   return (
-    <div className="flex flex-col h-full relative">
+    <div className="flex flex-col h-full relative max-w-7xl mx-auto"> {/* Added max width and centered */}
       <ChatHeader 
         characterName={characterName}
         characterAvatar={characterAvatar}
@@ -60,7 +61,7 @@ const Chat = ({
       />
       
       {/* Persona Setup Button */}
-      <div className="border-b border-desyr-soft-gold/20 p-2 flex justify-end">
+      <div className="border-b border-desyr-soft-gold/20 p-3 flex justify-end"> {/* Increased padding */}
         <Button 
           variant="outline" 
           className="border-desyr-soft-gold/30 hover:bg-desyr-soft-gold/10"
@@ -83,15 +84,17 @@ const Chat = ({
         />
       )}
       
-      <ChatMessageList
-        messages={messages}
-        isLoading={isLoading}
-        onRemember={handleRemember}
-        onEdit={handleEditMessage}
-        onRegenerate={handleRegenerateLastMessage}
-        characterAvatar={characterAvatar}
-        userInfo={userInfo}
-      />
+      <div className="flex flex-col flex-1 overflow-hidden"> {/* Added container for better scroll control */}
+        <ChatMessageList
+          messages={messages}
+          isLoading={isLoading}
+          onRemember={handleRemember}
+          onEdit={handleEditMessage}
+          onRegenerate={handleRegenerateLastMessage}
+          characterAvatar={characterAvatar}
+          userInfo={userInfo}
+        />
+      </div>
       
       <ChatInput
         input={input}
