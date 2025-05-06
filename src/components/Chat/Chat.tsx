@@ -3,11 +3,9 @@ import { useEffect, useState } from "react";
 import ChatHeader from "./ChatHeader";
 import ChatMessageList from "./ChatMessageList";
 import ChatInput from "./ChatInput";
-import PersonaSetup from "./PersonaSetup";
+import PersonaManager from "./PersonaManager";
 import { ChatProps, UserInfo } from "./types";
 import { useChat } from "@/hooks/chat/useChat";
-import { Button } from "@/components/ui/button";
-import { User } from "lucide-react";
 
 const Chat = ({
   characterName = "Joe Fisher",
@@ -15,12 +13,34 @@ const Chat = ({
   initialSystemMessage = "You are Joe Fisher, a dominant, emotionally raw, and protective confidant. You speak directly and with authority, while maintaining respect and boundaries. Your responses are strong and clear, never crude. Match the tone and depth of the user's messages.",
 }: ChatProps) => {
   const [expandedAvatar, setExpandedAvatar] = useState(false);
-  const [showPersonaSetup, setShowPersonaSetup] = useState(false);
+  const [activePersonaId, setActivePersonaId] = useState<string | null>(
+    localStorage.getItem("active_persona_id") || null
+  );
   const [userInfo, setUserInfo] = useState<UserInfo>({
+    id: "",
     name: localStorage.getItem("user_name") || "You",
     avatar: localStorage.getItem("user_avatar") || "",
     bio: localStorage.getItem("user_bio") || "",
   });
+  
+  // Load active persona from local storage
+  useEffect(() => {
+    const personaId = localStorage.getItem("active_persona_id");
+    if (personaId) {
+      setActivePersonaId(personaId);
+      
+      // Load personas from storage
+      const savedPersonas = localStorage.getItem("user_personas");
+      if (savedPersonas) {
+        const personas = JSON.parse(savedPersonas);
+        const activePersona = personas.find((p: UserInfo) => p.id === personaId);
+        
+        if (activePersona) {
+          setUserInfo(activePersona);
+        }
+      }
+    }
+  }, []);
   
   // Generate a personalized system message that includes user information
   const getPersonalizedSystemMessage = () => {
@@ -61,25 +81,26 @@ const Chat = ({
     initializeChat();
   }, [userInfo, initialSystemMessage, characterName]);
   
-  // Save user info to localStorage
-  useEffect(() => {
-    localStorage.setItem("user_name", userInfo.name);
-    if (userInfo.avatar) {
-      localStorage.setItem("user_avatar", userInfo.avatar);
+  // Handle selecting a persona
+  const handleSelectPersona = (persona: UserInfo) => {
+    setUserInfo(persona);
+    setActivePersonaId(persona.id);
+    
+    // Save to localStorage for backward compatibility
+    localStorage.setItem("user_name", persona.name);
+    if (persona.avatar) {
+      localStorage.setItem("user_avatar", persona.avatar);
     }
-    if (userInfo.bio) {
-      localStorage.setItem("user_bio", userInfo.bio);
+    if (persona.bio) {
+      localStorage.setItem("user_bio", persona.bio);
     }
-  }, [userInfo]);
-
-  // Handle saving user persona
-  const handleSavePersona = (info: UserInfo) => {
-    setUserInfo(info);
-    setShowPersonaSetup(false);
+    
+    // Start a new chat when switching personas
+    handleNewChat();
   };
 
   return (
-    <div className="flex flex-col h-full relative max-w-7xl mx-auto"> {/* Added max width and centered */}
+    <div className="flex flex-col h-full relative max-w-7xl mx-auto">
       <ChatHeader 
         characterName={characterName}
         characterAvatar={characterAvatar}
@@ -88,28 +109,15 @@ const Chat = ({
         onNewChat={handleNewChat}
       />
       
-      {/* Persona Setup Button */}
-      <div className="border-b border-desyr-soft-gold/20 p-3 flex justify-end"> {/* Increased padding */}
-        <Button 
-          variant="outline" 
-          className="border-desyr-soft-gold/30 hover:bg-desyr-soft-gold/10"
-          onClick={() => setShowPersonaSetup(true)}
-        >
-          <User className="h-4 w-4 mr-2" />
-          {userInfo.name !== "You" ? userInfo.name : "Set Your Persona"}
-        </Button>
+      {/* Persona Manager */}
+      <div className="border-b border-desyr-soft-gold/20 p-3 flex justify-end">
+        <PersonaManager
+          activePersnaId={activePersonaId}
+          onSelectPersona={handleSelectPersona}
+        />
       </div>
       
-      {/* Persona Setup Modal */}
-      {showPersonaSetup && (
-        <PersonaSetup 
-          userInfo={userInfo}
-          onSave={handleSavePersona}
-          onCancel={() => setShowPersonaSetup(false)} 
-        />
-      )}
-      
-      <div className="flex flex-col flex-1 overflow-hidden"> {/* Added container for better scroll control */}
+      <div className="flex flex-col flex-1 overflow-hidden">
         <ChatMessageList
           messages={messages}
           isLoading={isLoading}

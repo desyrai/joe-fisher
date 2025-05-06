@@ -62,9 +62,33 @@ export const generateChatCompletion = async (
   // Get conversation history (excluding system messages)
   const conversationMessages = messages.filter(msg => msg.role !== "system");
   
-  // Get user persona information
-  const userName = localStorage.getItem("user_name") || "You";
-  const userBio = localStorage.getItem("user_bio") || "";
+  // Get active persona information
+  const activePersonaId = localStorage.getItem("active_persona_id");
+  const savedPersonas = localStorage.getItem("user_personas");
+  
+  let userName = "You";
+  let userBio = "";
+  
+  if (activePersonaId && savedPersonas) {
+    try {
+      const personas = JSON.parse(savedPersonas);
+      const activePersona = personas.find((p: any) => p.id === activePersonaId);
+      
+      if (activePersona) {
+        userName = activePersona.name || "You";
+        userBio = activePersona.bio || "";
+      }
+    } catch (error) {
+      console.error("Error parsing personas:", error);
+      // Fallback to legacy storage
+      userName = localStorage.getItem("user_name") || "You";
+      userBio = localStorage.getItem("user_bio") || "";
+    }
+  } else {
+    // Fallback to legacy storage
+    userName = localStorage.getItem("user_name") || "You";
+    userBio = localStorage.getItem("user_bio") || "";
+  }
   
   // Add a continuity reminder that includes user persona information
   if (conversationMessages.length > 0) {

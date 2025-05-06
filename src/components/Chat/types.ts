@@ -16,7 +16,9 @@ export interface ChatProps {
 }
 
 export interface UserInfo {
+  id: string;
   name: string;
   avatar?: string;
   bio?: string;
 }
+

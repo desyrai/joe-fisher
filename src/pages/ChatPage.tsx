@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Chat from "@/components/Chat/Chat";
 import Passcode from "@/components/Passcode";
 import SignupForm from "@/components/SignupForm";
-import ApiKeySetup from "@/components/ApiKeySetup";
 
 const ChatPage = () => {
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -31,7 +30,31 @@ const ChatPage = () => {
     if (unlocked === "true") {
       setIsUnlocked(true);
     }
+
+    // Initialize default persona if needed
+    initializeDefaultPersona();
   }, []);
+  
+  // Initialize default persona if none exists
+  const initializeDefaultPersona = () => {
+    const savedPersonas = localStorage.getItem('user_personas');
+    if (!savedPersonas) {
+      const name = localStorage.getItem('user_name');
+      const avatar = localStorage.getItem('user_avatar');
+      const bio = localStorage.getItem('user_bio');
+      
+      // Create a default persona from existing user data or empty
+      const defaultPersona = {
+        id: 'default',
+        name: name || 'You',
+        avatar: avatar || '',
+        bio: bio || ''
+      };
+      
+      localStorage.setItem('user_personas', JSON.stringify([defaultPersona]));
+      localStorage.setItem('active_persona_id', defaultPersona.id);
+    }
+  };
   
   const handleSignup = (email: string) => {
     setIsSignedUp(true);
@@ -41,10 +64,6 @@ const ChatPage = () => {
     setIsUnlocked(true);
     // Store unlock state in session storage to persist during page refresh
     sessionStorage.setItem("app_unlocked", "true");
-  };
-  
-  const handleApiKeySet = () => {
-    setIsApiKeySet(true);
   };
   
   if (!isUnlocked) {

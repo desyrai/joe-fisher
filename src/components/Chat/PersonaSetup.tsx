@@ -8,18 +8,16 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Check, X, Upload, Camera } from "lucide-react";
 import { toast } from "sonner";
+import { UserInfo } from "./types";
 
 interface PersonaSetupProps {
-  userInfo: {
-    name: string;
-    avatar?: string;
-    bio?: string;
-  };
-  onSave: (userInfo: { name: string; avatar?: string; bio?: string }) => void;
+  userInfo: UserInfo;
+  onSave: (userInfo: UserInfo) => void;
   onCancel: () => void;
+  isEditing?: boolean;
 }
 
-const PersonaSetup = ({ userInfo, onSave, onCancel }: PersonaSetupProps) => {
+const PersonaSetup = ({ userInfo, onSave, onCancel, isEditing = false }: PersonaSetupProps) => {
   const [name, setName] = useState(userInfo.name === "You" ? "" : userInfo.name);
   const [avatar, setAvatar] = useState<string | undefined>(userInfo.avatar);
   const [bio, setBio] = useState(userInfo.bio || "");
@@ -68,6 +66,7 @@ const PersonaSetup = ({ userInfo, onSave, onCancel }: PersonaSetupProps) => {
 
   const handleSave = () => {
     onSave({
+      id: userInfo.id || "",
       name: name || "You",
       avatar,
       bio,
@@ -78,7 +77,9 @@ const PersonaSetup = ({ userInfo, onSave, onCancel }: PersonaSetupProps) => {
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md border-desyr-soft-gold/20">
         <CardHeader className="border-b border-desyr-soft-gold/20">
-          <CardTitle className="text-center font-playfair text-desyr-deep-gold">Your Persona</CardTitle>
+          <CardTitle className="text-center font-playfair text-desyr-deep-gold">
+            {isEditing ? 'Edit Persona' : 'Create New Persona'}
+          </CardTitle>
         </CardHeader>
         
         <CardContent className="pt-6 space-y-6">
@@ -159,7 +160,7 @@ const PersonaSetup = ({ userInfo, onSave, onCancel }: PersonaSetupProps) => {
           </Button>
           <Button onClick={handleSave} className="gold-button">
             <Check className="h-4 w-4 mr-1" />
-            Save Persona
+            {isEditing ? 'Update Persona' : 'Save Persona'}
           </Button>
         </CardFooter>
       </Card>
