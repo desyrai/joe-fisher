@@ -69,17 +69,17 @@ const ChatMessage = ({
         <div className="flex flex-col md:flex-row">
           {/* Left Column - Character Image and Name */}
           <div className="p-4 flex flex-col items-center justify-start min-w-[150px] md:max-w-[200px] border-r border-desyr-soft-gold/20">
-            <Avatar className="h-24 w-24 border-2 border-desyr-soft-gold/30 mb-2">
+            <Avatar className="h-40 w-32 border-2 border-desyr-soft-gold/30 mb-2"> {/* Updated dimensions for portrait style */}
               <AvatarImage 
                 src={isUser ? (userInfo.avatar || "/placeholder.svg") : characterAvatar} 
                 alt={isUser ? userInfo.name : "Character"} 
                 className="object-cover" 
               />
               <AvatarFallback className={`${isUser ? "bg-desyr-taupe" : "bg-desyr-deep-gold"} text-white`}>
-                {isUser ? userInfo.name.charAt(0) : "AI"}
+                {isUser ? userInfo.name.charAt(0) : "JF"}
               </AvatarFallback>
             </Avatar>
-            <p className="text-center font-playfair text-lg">{isUser ? userInfo.name : "Joe Fisher"}</p>
+            <p className="text-center font-playfair text-lg mt-2">{isUser ? userInfo.name : "Joe Fisher"}</p>
           </div>
 
           {/* Right Column - Message Content */}
