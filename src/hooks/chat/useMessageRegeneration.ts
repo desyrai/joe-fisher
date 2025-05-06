@@ -64,7 +64,7 @@ export const useMessageRegeneration = (
       const continuityReminder: Message = {
         id: `system-continuity-regen-${Date.now()}`,
         role: "system",
-        content: "IMPORTANT: Maintain continuity with your previous physical positions and emotional state. Complete all thoughts and sentences. Create a vivid, immersive scene with emotional depth and sensory details. Write a detailed, lengthy response (300-500 words minimum) that includes both descriptive actions and dialogue. Vary your pacing to build tension or intimacy. Include physical sensations, environmental details, and emotional reactions. Be raw and intense in your emotions and actions.",
+        content: "IMPORTANT: Maintain continuity with your previous physical positions and emotional state. Complete all thoughts and sentences. Create a vivid, immersive scene with emotional depth and sensory details. Write a detailed, lengthy response (500-800 words minimum) that includes both descriptive actions and dialogue. Don't worry about the visual length of your response - the user interface can scroll to accommodate long messages. Vary your pacing to build tension or intimacy. Include physical sensations, environmental details, and emotional reactions. Be raw and intense in your emotions and actions. Do not truncate or limit your response based on perceived text container size.",
         timestamp: Date.now(),
       };
       

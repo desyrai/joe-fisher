@@ -116,8 +116,12 @@ const ChatMessage = ({
                 </div>
               </div>
             ) : (
-              <ScrollArea className="flex-1 h-[400px] pr-6 overflow-y-auto" style={{WebkitOverflowScrolling: 'touch'}}> {/* Improved scrolling with more padding */}
-                <div className="pr-4"> {/* Added more padding to prevent text touching scrollbar */}
+              <div className="chat-message max-h-[500px] overflow-y-auto scrollbar-thin pr-6" style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: '#a87c3a #f0f0f0',
+                WebkitOverflowScrolling: 'touch'
+              }}>
+                <div className="pr-4"> {/* Added padding to prevent text touching scrollbar */}
                   <ReactMarkdown 
                     className="prose prose-lg max-w-none prose-p:my-4" /* Increased font size and paragraph spacing */
                     components={{
@@ -134,7 +138,7 @@ const ChatMessage = ({
                     {formatMessageContent(message.content)}
                   </ReactMarkdown>
                 </div>
-              </ScrollArea>
+              </div>
             )}
 
             {/* Message Controls - moved to bottom with more spacing */}

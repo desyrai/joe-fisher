@@ -1,5 +1,4 @@
 
-
 import { useState } from "react";
 import { Message } from "@/components/Chat/types";
 import { generateChatCompletion } from "@/services/openRouterService";
@@ -148,7 +147,7 @@ const prepareMessagesForApi = (
     role: "system",
     content: `CRITICAL: Remember the entire conversation context. Reference previous statements or actions when appropriate. Maintain spatial and emotional continuity between messages. If you referenced an object or location in previous messages, be consistent with it. Complete all sentences and thoughts. 
     
-    Write long, detailed responses (200-300 words) that include both physical descriptions and dialogue. Use descriptive language to create immersive scenes. Include emotional reactions, physical sensations, and environmental details. Vary pacing - sometimes slow and intimate, sometimes intense and passionate. 
+    Write long, detailed responses (500-800 words minimum) that include both physical descriptions and dialogue. Don't worry about the visual length of your response - the chat interface will scroll to accommodate long messages. Use descriptive language to create immersive scenes. Include emotional reactions, physical sensations, and environmental details. Vary pacing - sometimes slow and intimate, sometimes intense and passionate. 
     
     ${userName !== "You" ? ` The user's name is ${userName}. Address them by name occasionally.` : ''}${userBio ? ` IMPORTANT CONTEXT ABOUT THE USER: ${userBio}. Use this information subtly in your responses, responding appropriately to their persona without explicitly mentioning the bio itself.` : ''}`,
     timestamp: Date.now(),
@@ -174,7 +173,7 @@ const prepareMessagesForApi = (
     const continueInstruction: Message = {
       id: `system-continue-${Date.now()}`,
       role: "system",
-      content: `Continue from your previous message naturally as if you're adding to the same thought. Maintain the same tone, emotional state, and scene setting. Elaborate and expand on what you were describing. Add new actions, dialogue, or emotional development. Write 100-200 additional words that flow seamlessly from what came before.`,
+      content: `Continue from your previous message naturally as if you're adding to the same thought. Maintain the same tone, emotional state, and scene setting. Elaborate and expand on what you were describing. Add new actions, dialogue, or emotional development. Write 200-400 additional words that flow seamlessly from what came before. Don't worry about message length - the interface can handle longer messages.`,
       timestamp: Date.now(),
     };
     messagesToSend.push(continueInstruction);
@@ -200,4 +199,3 @@ const prepareMessagesForApi = (
   
   return messagesToSend;
 };
-
