@@ -1,4 +1,3 @@
-
 import { Message } from "@/components/Chat/types";
 
 interface ChatCompletionRequest {
@@ -130,8 +129,8 @@ export const generateChatCompletion = async (
   const requestData: ChatCompletionRequest = {
     messages: formattedMessages,
     model,
-    temperature,
-    max_tokens: 300, // Increased max tokens for slightly longer responses
+    temperature: 0.95, // Changed from 0.85 to 0.95
+    max_tokens: 400, // Changed from 300 to 400
     top_p: 0.95,
     frequency_penalty: 0.40,
     presence_penalty: 0.40,

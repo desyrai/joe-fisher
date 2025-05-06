@@ -119,8 +119,8 @@ const ChatMessage = ({
                 className="prose prose-lg max-w-none prose-p:my-4" /* Increased font size and paragraph spacing */
                 components={{
                   p: ({node, ...props}) => <p className="mb-5 last:mb-0 text-lg" {...props} />, /* Larger text and spacing */
-                  em: ({node, ...props}) => <em className="text-desyr-deep-gold font-normal not-italic" {...props} />,
-                  strong: ({node, ...props}) => <strong className="text-desyr-soft-gold" {...props} />,
+                  em: ({node, ...props}) => <em className="text-desyr-deep-gold font-normal not-italic" {...props} />, /* Swapped: Now descriptive text (italics) is dark gold */
+                  strong: ({node, ...props}) => <strong className="text-desyr-soft-gold" {...props} />, /* Color unchanged for strong text */
                   blockquote: ({node, ...props}) => (
                     <blockquote className="border-l-4 border-desyr-soft-gold/50 pl-4 italic text-desyr-deep-gold/80" {...props} />
                   )
