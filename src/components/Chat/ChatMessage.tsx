@@ -1,3 +1,4 @@
+
 import { RefreshCw, Bookmark, Edit, SkipForward, Check, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Message } from "./types";
@@ -115,16 +116,18 @@ const ChatMessage = ({
                 </div>
               </div>
             ) : (
-              <ScrollArea className="flex-1 h-[400px] pr-4 overflow-y-auto"> {/* Added overflow-y-auto for explicit scrolling */}
-                <div className="pr-3"> {/* Added padding to prevent text touching scrollbar */}
+              <ScrollArea className="flex-1 h-[400px] pr-6 overflow-y-auto" style={{WebkitOverflowScrolling: 'touch'}}> {/* Improved scrolling with more padding */}
+                <div className="pr-4"> {/* Added more padding to prevent text touching scrollbar */}
                   <ReactMarkdown 
                     className="prose prose-lg max-w-none prose-p:my-4" /* Increased font size and paragraph spacing */
                     components={{
                       p: ({node, ...props}) => <p className="mb-5 last:mb-0 text-lg" {...props} />, /* Larger text and spacing */
-                      em: ({node, ...props}) => <em className="text-desyr-deep-gold font-normal not-italic" {...props} />, /* Descriptive text (italics) is dark gold */
-                      strong: ({node, ...props}) => <strong className="text-desyr-soft-gold" {...props} />, /* Color unchanged for strong text */
+                      // Updated text formatting as requested - no italics for descriptive text
+                      em: ({node, ...props}) => <span className="text-desyr-deep-gold" {...props} />, /* Descriptive text (no italics) is dark gold */
+                      // Dialogue in quotes will be soft gold
+                      strong: ({node, ...props}) => <span className="text-desyr-soft-gold" {...props} />, /* Gold color for emphasized text */
                       blockquote: ({node, ...props}) => (
-                        <blockquote className="border-l-4 border-desyr-soft-gold/50 pl-4 italic text-desyr-deep-gold/80" {...props} />
+                        <blockquote className="border-l-4 border-desyr-soft-gold/50 pl-4 text-desyr-soft-gold" {...props} />
                       )
                     }}
                   >

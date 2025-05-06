@@ -46,7 +46,7 @@ const ChatMessageList = ({
     assistantMessages[assistantMessages.length - 1] : null;
 
   return (
-    <div className="flex-1 overflow-y-auto px-6 py-8 space-y-8"> {/* Main container with overflow handling */}
+    <div className="flex-1 overflow-y-auto px-6 py-8 space-y-8 bg-white/50"> {/* Added background for better contrast */}
       {messages
         .filter(msg => msg.role !== "system")
         .map((message) => (
