@@ -1,4 +1,3 @@
-
 import { Message } from "@/components/Chat/types";
 
 interface ChatCompletionRequest {
@@ -12,6 +11,7 @@ interface ChatCompletionRequest {
   top_p?: number;
   frequency_penalty?: number;
   presence_penalty?: number;
+  repetition_penalty?: number;
 }
 
 interface ChatCompletionResponse {
@@ -42,8 +42,8 @@ export const getOpenRouterApiKey = (): string | null => {
 export const generateChatCompletion = async (
   messages: Message[],
   model: string = MODEL,
-  temperature: number = 1.2,
-  max_tokens: number = 150,
+  temperature: number = 0.85,
+  max_tokens: number = 200,
 ): Promise<string> => {
   const apiKey = getOpenRouterApiKey();
   
@@ -88,7 +88,7 @@ export const generateChatCompletion = async (
   }
   
   // Keep all conversation messages for better context
-  const recentMessages = conversationMessages.slice(-8);
+  const recentMessages = conversationMessages.slice(-50);  // Use a higher limit for max context
   formattedMessages.push(...recentMessages.map(({ role, content }) => ({ role, content })));
 
   const requestData: ChatCompletionRequest = {
@@ -97,8 +97,9 @@ export const generateChatCompletion = async (
     temperature,
     max_tokens,
     top_p: 0.95,
-    frequency_penalty: 0.2,
-    presence_penalty: 0.5,
+    frequency_penalty: 0.40,
+    presence_penalty: 0.40,
+    repetition_penalty: 1.15,
   };
 
   try {
