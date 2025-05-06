@@ -18,7 +18,7 @@ const ChatPage = () => {
     }
     
     // Check if API key is set
-    const apiKey = localStorage.getItem("groq_api_key");
+    const apiKey = localStorage.getItem("openrouter_api_key");
     if (apiKey) {
       setIsApiKeySet(true);
     }

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getGroqApiKey, setGroqApiKey } from "@/services/groqService";
+import { getOpenRouterApiKey, setOpenRouterApiKey } from "@/services/openRouterService";
 
 interface ApiKeySetupProps {
   onComplete: () => void;
@@ -14,7 +14,7 @@ const ApiKeySetup = ({ onComplete }: ApiKeySetupProps) => {
   
   useEffect(() => {
     // Check if API key already exists
-    const existingKey = getGroqApiKey();
+    const existingKey = getOpenRouterApiKey();
     if (existingKey) {
       onComplete();
     }
@@ -24,33 +24,33 @@ const ApiKeySetup = ({ onComplete }: ApiKeySetupProps) => {
     e.preventDefault();
     
     if (!apiKey.trim()) {
-      setError("Please enter your Groq API key");
+      setError("Please enter your OpenRouter API key");
       return;
     }
     
-    // Basic validation - Groq keys usually start with 'gsk_'
-    if (!apiKey.startsWith("gsk_")) {
-      setError("This doesn't look like a valid Groq API key");
+    // Basic validation - OpenRouter keys usually start with 'sk-'
+    if (!apiKey.startsWith("sk-")) {
+      setError("This doesn't look like a valid OpenRouter API key");
       return;
     }
     
     // Save the API key
-    setGroqApiKey(apiKey);
+    setOpenRouterApiKey(apiKey);
     onComplete();
   };
   
   return (
     <div className="w-full max-w-md animate-fade-in">
-      <h2 className="text-2xl font-playfair gold-gradient mb-2">Connect Your Groq API</h2>
+      <h2 className="text-2xl font-playfair gold-gradient mb-2">Connect Your OpenRouter API</h2>
       <p className="text-desyr-taupe mb-6">
-        To enable the chat functionality, please enter your Groq API key.
+        To enable the chat functionality, please enter your OpenRouter API key.
       </p>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <Input
             type="password"
-            placeholder="Your Groq API key (starts with gsk_)"
+            placeholder="Your OpenRouter API key (starts with sk-)"
             value={apiKey}
             onChange={(e) => {
               setApiKey(e.target.value);
@@ -72,12 +72,12 @@ const ApiKeySetup = ({ onComplete }: ApiKeySetupProps) => {
           Your API key is stored locally in your browser and is never sent to our servers.
           <br />
           <a 
-            href="https://console.groq.com/keys" 
+            href="https://openrouter.ai/keys" 
             target="_blank" 
             rel="noopener noreferrer"
             className="text-desyr-deep-gold hover:underline"
           >
-            Get a Groq API key here
+            Get an OpenRouter API key here
           </a>
         </p>
       </form>

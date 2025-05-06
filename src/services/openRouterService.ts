@@ -1,4 +1,3 @@
-
 import { Message } from "@/components/Chat/types";
 
 interface ChatCompletionRequest {
@@ -24,31 +23,31 @@ interface ChatCompletionResponse {
 }
 
 // In a real app, you'd securely store and access this
-let groqApiKey: string | null = null; 
-const TEMP_MODEL = "llama3-70b-8192";
+let openRouterApiKey: string | null = null; 
+const MODEL = "qwen/qwen-plus";
 
-export const setGroqApiKey = (key: string) => {
-  groqApiKey = key;
-  localStorage.setItem("groq_api_key", key);
+export const setOpenRouterApiKey = (key: string) => {
+  openRouterApiKey = key;
+  localStorage.setItem("openrouter_api_key", key);
 };
 
-export const getGroqApiKey = (): string | null => {
-  if (!groqApiKey) {
-    groqApiKey = localStorage.getItem("groq_api_key");
+export const getOpenRouterApiKey = (): string | null => {
+  if (!openRouterApiKey) {
+    openRouterApiKey = localStorage.getItem("openrouter_api_key");
   }
-  return groqApiKey;
+  return openRouterApiKey;
 };
 
 export const generateChatCompletion = async (
   messages: Message[],
-  model: string = TEMP_MODEL,
+  model: string = MODEL,
   temperature: number = 1.2,
   max_tokens: number = 150,
 ): Promise<string> => {
-  const apiKey = getGroqApiKey();
+  const apiKey = getOpenRouterApiKey();
   
   if (!apiKey) {
-    throw new Error("Groq API key not set. Please set your API key.");
+    throw new Error("OpenRouter API key not set. Please set your API key.");
   }
 
   // Format messages for the API
@@ -102,11 +101,13 @@ export const generateChatCompletion = async (
   };
 
   try {
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
+        "HTTP-Referer": window.location.href,
+        "X-Title": "Joe Fisher Character Chat"
       },
       body: JSON.stringify(requestData),
     });
