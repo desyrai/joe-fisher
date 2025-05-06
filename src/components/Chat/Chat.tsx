@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import ChatHeader from "./ChatHeader";
 import ChatMessageList from "./ChatMessageList";
 import ChatInput from "./ChatInput";
+import PersonaSetup from "./PersonaSetup";
 import { ChatProps } from "./types";
 import { useChat } from "@/hooks/chat/useChat";
+import { Button } from "@/components/ui/button";
+import { User } from "lucide-react";
 
 const Chat = ({
   characterName = "Joe Fisher",
@@ -12,6 +15,11 @@ const Chat = ({
   initialSystemMessage = "You are Joe Fisher, a dominant, emotionally raw, and protective confidant. You speak directly and with authority, while maintaining respect and boundaries. Your responses are strong and clear, never crude. Match the tone and depth of the user's messages.",
 }: ChatProps) => {
   const [expandedAvatar, setExpandedAvatar] = useState(false);
+  const [showPersonaSetup, setShowPersonaSetup] = useState(false);
+  const [userInfo, setUserInfo] = useState({
+    name: localStorage.getItem("user_name") || "You",
+    avatar: localStorage.getItem("user_avatar") || "",
+  });
   
   const {
     messages,
@@ -33,20 +41,17 @@ const Chat = ({
   useEffect(() => {
     initializeChat();
   }, [initialSystemMessage, characterName]);
+  
+  // Save user info to localStorage
+  useEffect(() => {
+    localStorage.setItem("user_name", userInfo.name);
+    if (userInfo.avatar) {
+      localStorage.setItem("user_avatar", userInfo.avatar);
+    }
+  }, [userInfo]);
 
   return (
     <div className="flex flex-col h-full relative">
-      {/* Floating Avatar - visible on medium screens and up */}
-      <div className="hidden md:block">
-        <div className="floating-avatar">
-          <img 
-            src={characterAvatar} 
-            alt={characterName}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div>
-      
       <ChatHeader 
         characterName={characterName}
         characterAvatar={characterAvatar}
@@ -55,6 +60,30 @@ const Chat = ({
         onNewChat={handleNewChat}
       />
       
+      {/* Persona Setup Button */}
+      <div className="border-b border-desyr-soft-gold/20 p-2 flex justify-end">
+        <Button 
+          variant="outline" 
+          className="border-desyr-soft-gold/30 hover:bg-desyr-soft-gold/10"
+          onClick={() => setShowPersonaSetup(true)}
+        >
+          <User className="h-4 w-4 mr-2" />
+          {userInfo.name !== "You" ? userInfo.name : "Set Your Persona"}
+        </Button>
+      </div>
+      
+      {/* Persona Setup Modal */}
+      {showPersonaSetup && (
+        <PersonaSetup 
+          userInfo={userInfo}
+          onSave={(info) => {
+            setUserInfo(info);
+            setShowPersonaSetup(false);
+          }}
+          onCancel={() => setShowPersonaSetup(false)} 
+        />
+      )}
+      
       <ChatMessageList
         messages={messages}
         isLoading={isLoading}
@@ -62,6 +91,7 @@ const Chat = ({
         onEdit={handleEditMessage}
         onRegenerate={handleRegenerateLastMessage}
         characterAvatar={characterAvatar}
+        userInfo={userInfo}
       />
       
       <ChatInput

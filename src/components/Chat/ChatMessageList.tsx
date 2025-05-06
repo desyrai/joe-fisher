@@ -3,6 +3,7 @@ import React, { useRef, useEffect } from "react";
 import { RefreshCw } from "lucide-react";
 import ChatMessage from "./ChatMessage";
 import { Message } from "./types";
+import { Card } from "@/components/ui/card";
 
 interface ChatMessageListProps {
   messages: Message[];
@@ -11,6 +12,10 @@ interface ChatMessageListProps {
   onEdit: (messageId: string, content: string) => void;
   onRegenerate: () => void;
   characterAvatar?: string;
+  userInfo?: {
+    name: string;
+    avatar?: string;
+  };
 }
 
 const ChatMessageList = ({
@@ -19,7 +24,8 @@ const ChatMessageList = ({
   onRemember,
   onEdit,
   onRegenerate,
-  characterAvatar
+  characterAvatar,
+  userInfo
 }: ChatMessageListProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -51,18 +57,17 @@ const ChatMessageList = ({
             onEdit={(content) => onEdit(message.id, content)}
             onRegenerate={message.id === lastAssistantMessage?.id ? onRegenerate : undefined}
             characterAvatar={characterAvatar}
+            userInfo={userInfo}
           />
         ))}
       
       {isLoading && (
-        <div className="flex justify-center my-4">
-          <div className="chat-bubble-ai w-fit">
-            <div className="flex items-center space-x-2">
-              <RefreshCw className="w-4 h-4 animate-spin text-desyr-deep-gold" />
-              <span className="text-desyr-taupe">Typing...</span>
-            </div>
+        <Card className="p-4 border border-desyr-soft-gold/20 shadow-sm">
+          <div className="flex items-center space-x-2">
+            <RefreshCw className="w-4 h-4 animate-spin text-desyr-deep-gold" />
+            <span className="text-desyr-taupe">Joe is typing...</span>
           </div>
-        </div>
+        </Card>
       )}
       
       <div ref={messagesEndRef} />

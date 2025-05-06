@@ -14,3 +14,9 @@ export interface ChatProps {
   characterAvatar?: string;
   initialSystemMessage?: string;
 }
+
+export interface UserInfo {
+  name: string;
+  avatar?: string;
+  bio?: string;
+}

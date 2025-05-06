@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Card } from "@/components/ui/card";
 import ReactMarkdown from "react-markdown";
 
 interface ChatMessageProps {
@@ -14,9 +15,20 @@ interface ChatMessageProps {
   onEdit: (newContent: string) => void;
   onRegenerate?: () => void;
   characterAvatar?: string;
+  userInfo?: {
+    name: string;
+    avatar?: string;
+  };
 }
 
-const ChatMessage = ({ message, onRemember, onEdit, onRegenerate, characterAvatar }: ChatMessageProps) => {
+const ChatMessage = ({ 
+  message, 
+  onRemember, 
+  onEdit, 
+  onRegenerate, 
+  characterAvatar,
+  userInfo = { name: "You" } 
+}: ChatMessageProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
   
@@ -45,20 +57,33 @@ const ChatMessage = ({ message, onRemember, onEdit, onRegenerate, characterAvata
   // Show previous versions dropdown only if there are actual regenerations
   const hasRegenerations = message.regenerations && message.regenerations.length > 0;
   
+  // Parse message content for color formatting
+  const formatMessageContent = (content: string) => {
+    // Apply any specific formatting here if needed
+    return content;
+  };
+
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}>
-      <div className={`flex ${isUser ? "flex-row-reverse" : "flex-row"} max-w-[80%]`}>
-        {!isUser && (
-          <div className="mr-2 mt-1">
-            <Avatar className="h-16 w-16 border border-desyr-soft-gold/30">
-              <AvatarImage src={characterAvatar} alt="Character" className="object-cover" />
-              <AvatarFallback className="bg-desyr-deep-gold text-white">AI</AvatarFallback>
+    <div className="mb-8">
+      <Card className="border border-desyr-soft-gold/20 shadow-sm">
+        <div className="flex flex-col md:flex-row">
+          {/* Left Column - Character Image and Name */}
+          <div className="p-4 flex flex-col items-center justify-start min-w-[150px] md:max-w-[200px] border-r border-desyr-soft-gold/20">
+            <Avatar className="h-24 w-24 border-2 border-desyr-soft-gold/30 mb-2">
+              <AvatarImage 
+                src={isUser ? (userInfo.avatar || "/placeholder.svg") : characterAvatar} 
+                alt={isUser ? userInfo.name : "Character"} 
+                className="object-cover" 
+              />
+              <AvatarFallback className={`${isUser ? "bg-desyr-taupe" : "bg-desyr-deep-gold"} text-white`}>
+                {isUser ? userInfo.name.charAt(0) : "AI"}
+              </AvatarFallback>
             </Avatar>
+            <p className="text-center font-playfair text-lg">{isUser ? userInfo.name : "Joe Fisher"}</p>
           </div>
-        )}
-        
-        <div className="flex flex-col">
-          <div className={isUser ? "chat-bubble-user" : "chat-bubble-ai"}>
+
+          {/* Right Column - Message Content */}
+          <div className="flex-1 p-4">
             {isEditing ? (
               <div className="space-y-2">
                 <Textarea
@@ -93,43 +118,17 @@ const ChatMessage = ({ message, onRemember, onEdit, onRegenerate, characterAvata
               <ReactMarkdown 
                 className="prose prose-sm max-w-none"
                 components={{
-                  p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
-                  em: ({node, ...props}) => <em className="text-desyr-deep-gold font-normal not-italic" {...props} />
+                  p: ({node, ...props}) => <p className="mb-3 last:mb-0" {...props} />,
+                  em: ({node, ...props}) => <em className="text-desyr-deep-gold font-normal not-italic" {...props} />,
+                  strong: ({node, ...props}) => <strong className="text-desyr-soft-gold" {...props} />
                 }}
               >
-                {message.content}
+                {formatMessageContent(message.content)}
               </ReactMarkdown>
             )}
-          </div>
-          
-          {hasRegenerations && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="text-xs px-2 py-0 h-6 text-desyr-taupe flex items-center mt-1"
-                >
-                  {message.regenerations!.length} previous version{message.regenerations!.length !== 1 ? 's' : ''}
-                  <ChevronDown className="h-3 w-3 ml-1" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-64">
-                {message.regenerations!.map((content, index) => (
-                  <DropdownMenuItem 
-                    key={index}
-                    className="cursor-pointer"
-                    onClick={() => handleSelectPreviousVersion(content)}
-                  >
-                    {content.length > 30 ? `${content.substring(0, 30)}...` : content}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-          
-          <div className={`flex mt-1 ${isUser ? "justify-end" : "justify-start"}`}>
-            <div className="flex space-x-2">
+
+            {/* Message Controls */}
+            <div className="mt-4 flex justify-end space-x-2">
               <Button
                 type="button"
                 size="sm"
@@ -167,9 +166,38 @@ const ChatMessage = ({ message, onRemember, onEdit, onRegenerate, characterAvata
                 Edit
               </Button>
             </div>
+
+            {/* Previous Versions */}
+            {hasRegenerations && (
+              <div className="mt-1">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-xs px-2 py-0 h-6 text-desyr-taupe flex items-center"
+                    >
+                      {message.regenerations!.length} previous version{message.regenerations!.length !== 1 ? 's' : ''}
+                      <ChevronDown className="h-3 w-3 ml-1" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-64">
+                    {message.regenerations!.map((content, index) => (
+                      <DropdownMenuItem 
+                        key={index}
+                        className="cursor-pointer"
+                        onClick={() => handleSelectPreviousVersion(content)}
+                      >
+                        {content.length > 30 ? `${content.substring(0, 30)}...` : content}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };
