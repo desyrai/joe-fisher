@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
 import ReactMarkdown from "react-markdown";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ChatMessageProps {
   message: Message;
@@ -83,9 +84,9 @@ const ChatMessage = ({
           </div>
 
           {/* Right Column - Message Content */}
-          <div className="flex-1 p-8 max-h-[800px] overflow-y-auto"> {/* Added max-height and overflow for very long messages */}
+          <div className="flex-1 p-8 flex flex-col"> {/* Changed to flex container */}
             {isEditing ? (
-              <div className="space-y-2">
+              <div className="space-y-2 flex-1">
                 <Textarea
                   value={editContent}
                   onChange={(e) => setEditContent(e.target.value)}
@@ -115,19 +116,21 @@ const ChatMessage = ({
                 </div>
               </div>
             ) : (
-              <ReactMarkdown 
-                className="prose prose-lg max-w-none prose-p:my-4" /* Increased font size and paragraph spacing */
-                components={{
-                  p: ({node, ...props}) => <p className="mb-5 last:mb-0 text-lg" {...props} />, /* Larger text and spacing */
-                  em: ({node, ...props}) => <em className="text-desyr-deep-gold font-normal not-italic" {...props} />, /* Descriptive text (italics) is dark gold */
-                  strong: ({node, ...props}) => <strong className="text-desyr-soft-gold" {...props} />, /* Color unchanged for strong text */
-                  blockquote: ({node, ...props}) => (
-                    <blockquote className="border-l-4 border-desyr-soft-gold/50 pl-4 italic text-desyr-deep-gold/80" {...props} />
-                  )
-                }}
-              >
-                {formatMessageContent(message.content)}
-              </ReactMarkdown>
+              <ScrollArea className="flex-1 h-[400px] pr-4"> {/* Added ScrollArea with fixed height */}
+                <ReactMarkdown 
+                  className="prose prose-lg max-w-none prose-p:my-4" /* Increased font size and paragraph spacing */
+                  components={{
+                    p: ({node, ...props}) => <p className="mb-5 last:mb-0 text-lg" {...props} />, /* Larger text and spacing */
+                    em: ({node, ...props}) => <em className="text-desyr-deep-gold font-normal not-italic" {...props} />, /* Descriptive text (italics) is dark gold */
+                    strong: ({node, ...props}) => <strong className="text-desyr-soft-gold" {...props} />, /* Color unchanged for strong text */
+                    blockquote: ({node, ...props}) => (
+                      <blockquote className="border-l-4 border-desyr-soft-gold/50 pl-4 italic text-desyr-deep-gold/80" {...props} />
+                    )
+                  }}
+                >
+                  {formatMessageContent(message.content)}
+                </ReactMarkdown>
+              </ScrollArea>
             )}
 
             {/* Message Controls - moved to bottom with more spacing */}

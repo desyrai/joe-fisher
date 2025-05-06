@@ -60,11 +60,11 @@ export const useMessageRegeneration = (
         };
       }
       
-      // Add continuity reminder
+      // Add continuity reminder with enhanced length and detail instructions
       const continuityReminder: Message = {
         id: `system-continuity-regen-${Date.now()}`,
         role: "system",
-        content: "IMPORTANT: Maintain continuity with your previous physical positions and emotional state. Complete all thoughts and sentences. Write a detailed response (200-300 words) that includes both descriptive actions and dialogue. Create an immersive scene with emotional depth and sensory details.",
+        content: "IMPORTANT: Maintain continuity with your previous physical positions and emotional state. Complete all thoughts and sentences. Create a vivid, immersive scene with emotional depth and sensory details. Write a detailed, lengthy response (300-500 words minimum) that includes both descriptive actions and dialogue. Vary your pacing to build tension or intimacy. Include physical sensations, environmental details, and emotional reactions. Be raw and intense in your emotions and actions.",
         timestamp: Date.now(),
       };
       
