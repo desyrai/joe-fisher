@@ -1,3 +1,4 @@
+
 import { Message } from "@/components/Chat/types";
 
 interface ChatCompletionRequest {
@@ -61,30 +62,41 @@ export const generateChatCompletion = async (
   // Get conversation history (excluding system messages)
   const conversationMessages = messages.filter(msg => msg.role !== "system");
   
-  // Add a simple continuity reminder that's less restrictive
+  // Get user persona information
+  const userName = localStorage.getItem("user_name") || "You";
+  const userBio = localStorage.getItem("user_bio") || "";
+  
+  // Add a continuity reminder that includes user persona information
   if (conversationMessages.length > 0) {
-    const lastAssistantMessages = conversationMessages
-      .filter(msg => msg.role === "assistant")
-      .slice(-2);
+    let continuityPrompt = "Remember the physical positioning and emotional state from your previous messages. ";
     
-    if (lastAssistantMessages.length > 0) {
-      let continuityPrompt = "Remember the physical positioning and emotional state from your previous messages. ";
-      
-      const physicalActionMatches = lastAssistantMessages.map(msg => {
+    // Add user name personalization
+    if (userName !== "You") {
+      continuityPrompt += `Always refer to the user as ${userName} occasionally. `;
+    }
+    
+    // Add bio context if available
+    if (userBio) {
+      continuityPrompt += `Keep in mind this important context about the user: ${userBio}. Adapt your responses accordingly without explicitly mentioning it. `;
+    }
+    
+    const physicalActionMatches = conversationMessages
+      .filter(msg => msg.role === "assistant")
+      .slice(-2)
+      .map(msg => {
         const matches = msg.content.match(/\*(.*?)\*/g);
         return matches ? matches[0] : "";
       }).filter(Boolean);
       
-      if (physicalActionMatches.length > 0) {
-        continuityPrompt += "Your last physical actions were: " + 
-          physicalActionMatches.join(" then ") + ". ";
-      }
-      
-      formattedMessages.push({
-        role: "system",
-        content: continuityPrompt
-      });
+    if (physicalActionMatches.length > 0) {
+      continuityPrompt += "Your last physical actions were: " + 
+        physicalActionMatches.join(" then ") + ". ";
     }
+    
+    formattedMessages.push({
+      role: "system",
+      content: continuityPrompt
+    });
   }
   
   // Keep all conversation messages for better context
@@ -95,7 +107,7 @@ export const generateChatCompletion = async (
     messages: formattedMessages,
     model,
     temperature,
-    max_tokens,
+    max_tokens: 300, // Increased max tokens for slightly longer responses
     top_p: 0.95,
     frequency_penalty: 0.40,
     presence_penalty: 0.40,

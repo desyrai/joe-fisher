@@ -25,6 +25,12 @@ const ChatPage = () => {
     if (!apiKey) {
       localStorage.setItem("openrouter_api_key", "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");
     }
+    
+    // Check if the app is already unlocked in this session
+    const unlocked = sessionStorage.getItem("app_unlocked");
+    if (unlocked === "true") {
+      setIsUnlocked(true);
+    }
   }, []);
   
   const handleSignup = (email: string) => {
@@ -33,6 +39,8 @@ const ChatPage = () => {
   
   const handleUnlock = () => {
     setIsUnlocked(true);
+    // Store unlock state in session storage to persist during page refresh
+    sessionStorage.setItem("app_unlocked", "true");
   };
   
   const handleApiKeySet = () => {

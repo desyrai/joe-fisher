@@ -76,11 +76,15 @@ const prepareMessagesForApi = (
   // Get all user and assistant messages to maintain conversation flow
   const conversationMessages = messages.filter(msg => msg.role !== "system");
   
-  // Enhanced system prompt to enforce continuity
+  // Get user persona information from localStorage for personalization
+  const userName = localStorage.getItem("user_name") || "You";
+  const userBio = localStorage.getItem("user_bio") || "";
+  
+  // Enhanced system prompt to enforce continuity and personalization
   const enhancedSystemPrompt: Message = {
     id: `system-continuity-${Date.now()}`,
     role: "system",
-    content: "CRITICAL: Remember the entire conversation context. Reference previous statements or actions when appropriate. Maintain spatial and emotional continuity between messages. If you referenced an object or location in previous messages, be consistent with it. Complete all sentences and thoughts. Keep responses under 75 words.",
+    content: `CRITICAL: Remember the entire conversation context. Reference previous statements or actions when appropriate. Maintain spatial and emotional continuity between messages. If you referenced an object or location in previous messages, be consistent with it. Complete all sentences and thoughts. Keep responses under 75 words.${userName !== "You" ? ` The user's name is ${userName}. Address them by name occasionally.` : ''}${userBio ? ` IMPORTANT CONTEXT ABOUT THE USER: ${userBio}. Use this information subtly in your responses, responding appropriately to their persona without explicitly mentioning the bio itself.` : ''}`,
     timestamp: Date.now(),
   };
   

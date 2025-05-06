@@ -19,7 +19,25 @@ const Chat = ({
   const [userInfo, setUserInfo] = useState<UserInfo>({
     name: localStorage.getItem("user_name") || "You",
     avatar: localStorage.getItem("user_avatar") || "",
+    bio: localStorage.getItem("user_bio") || "",
   });
+  
+  // Generate a personalized system message that includes user information
+  const getPersonalizedSystemMessage = () => {
+    let message = initialSystemMessage;
+    
+    // Add user name personalization if available
+    if (userInfo.name && userInfo.name !== "You") {
+      message += ` The user's name is ${userInfo.name}. Always address them by name occasionally.`;
+    }
+    
+    // Add bio context if available
+    if (userInfo.bio) {
+      message += ` IMPORTANT CONTEXT: ${userInfo.bio}. Adapt your responses to show awareness of this background information without explicitly mentioning it every time.`;
+    }
+    
+    return message;
+  };
   
   const {
     messages,
@@ -35,12 +53,13 @@ const Chat = ({
     initializeChat,
   } = useChat({
     characterName,
-    initialSystemMessage,
+    initialSystemMessage: getPersonalizedSystemMessage(),
   });
   
+  // Re-initialize chat if user info changes
   useEffect(() => {
     initializeChat();
-  }, [initialSystemMessage, characterName]);
+  }, [userInfo, initialSystemMessage, characterName]);
   
   // Save user info to localStorage
   useEffect(() => {
@@ -48,7 +67,16 @@ const Chat = ({
     if (userInfo.avatar) {
       localStorage.setItem("user_avatar", userInfo.avatar);
     }
+    if (userInfo.bio) {
+      localStorage.setItem("user_bio", userInfo.bio);
+    }
   }, [userInfo]);
+
+  // Handle saving user persona
+  const handleSavePersona = (info: UserInfo) => {
+    setUserInfo(info);
+    setShowPersonaSetup(false);
+  };
 
   return (
     <div className="flex flex-col h-full relative max-w-7xl mx-auto"> {/* Added max width and centered */}
@@ -76,10 +104,7 @@ const Chat = ({
       {showPersonaSetup && (
         <PersonaSetup 
           userInfo={userInfo}
-          onSave={(info) => {
-            setUserInfo(info);
-            setShowPersonaSetup(false);
-          }}
+          onSave={handleSavePersona}
           onCancel={() => setShowPersonaSetup(false)} 
         />
       )}
