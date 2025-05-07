@@ -1,50 +1,27 @@
 
 import { Message } from "@/components/Chat/types";
+import { 
+  DEFAULT_MODEL,
+  DEFAULT_TEMPERATURE,
+  DEFAULT_MAX_TOKENS,
+  DEFAULT_TOP_P,
+  DEFAULT_FREQUENCY_PENALTY,
+  DEFAULT_PRESENCE_PENALTY,
+  DEFAULT_REPETITION_PENALTY,
+  getOpenRouterApiKey,
+  setOpenRouterApiKey
+} from "./api/openRouterConfig";
+import { ChatCompletionRequest, ChatCompletionResponse } from "./api/openRouterTypes";
+import { formatMessagesForApi } from "./api/messageFormatter";
 
-interface ChatCompletionRequest {
-  messages: {
-    role: string;
-    content: string;
-  }[];
-  model: string;
-  temperature?: number;
-  max_tokens?: number;
-  top_p?: number;
-  frequency_penalty?: number;
-  presence_penalty?: number;
-  repetition_penalty?: number;
-}
-
-interface ChatCompletionResponse {
-  choices: {
-    message: {
-      role: string;
-      content: string;
-    };
-  }[];
-}
-
-// In a real app, you'd securely store and access this
-let openRouterApiKey: string | null = "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"; 
-const MODEL = "qwen/qwen-plus";
-
-export const setOpenRouterApiKey = (key: string) => {
-  openRouterApiKey = key;
-  localStorage.setItem("openrouter_api_key", key);
-};
-
-export const getOpenRouterApiKey = (): string | null => {
-  if (!openRouterApiKey) {
-    openRouterApiKey = localStorage.getItem("openrouter_api_key");
-  }
-  return openRouterApiKey;
-};
+// Re-export API key management functions
+export { getOpenRouterApiKey, setOpenRouterApiKey };
 
 export const generateChatCompletion = async (
   messages: Message[],
-  model: string = MODEL,
-  temperature: number = 0.85,
-  max_tokens: number = 200,
+  model: string = DEFAULT_MODEL,
+  temperature: number = DEFAULT_TEMPERATURE,
+  max_tokens: number = DEFAULT_MAX_TOKENS,
 ): Promise<string> => {
   const apiKey = getOpenRouterApiKey();
   
@@ -53,89 +30,17 @@ export const generateChatCompletion = async (
   }
 
   // Format messages for the API
-  let formattedMessages = [];
-  
-  // Always include system messages first
-  const systemMessages = messages.filter(msg => msg.role === "system");
-  formattedMessages.push(...systemMessages.map(({ role, content }) => ({ role, content })));
-  
-  // Get conversation history (excluding system messages)
-  const conversationMessages = messages.filter(msg => msg.role !== "system");
-  
-  // Get active persona information
-  const activePersonaId = localStorage.getItem("active_persona_id");
-  const savedPersonas = localStorage.getItem("user_personas");
-  
-  let userName = "You";
-  let userBio = "";
-  
-  if (activePersonaId && savedPersonas) {
-    try {
-      const personas = JSON.parse(savedPersonas);
-      const activePersona = personas.find((p: any) => p.id === activePersonaId);
-      
-      if (activePersona) {
-        userName = activePersona.name || "You";
-        userBio = activePersona.bio || "";
-      }
-    } catch (error) {
-      console.error("Error parsing personas:", error);
-      // Fallback to legacy storage
-      userName = localStorage.getItem("user_name") || "You";
-      userBio = localStorage.getItem("user_bio") || "";
-    }
-  } else {
-    // Fallback to legacy storage
-    userName = localStorage.getItem("user_name") || "You";
-    userBio = localStorage.getItem("user_bio") || "";
-  }
-  
-  // Add a continuity reminder that includes user persona information
-  if (conversationMessages.length > 0) {
-    let continuityPrompt = "Remember the physical positioning and emotional state from your previous messages. ";
-    
-    // Add user name personalization
-    if (userName !== "You") {
-      continuityPrompt += `Always refer to the user as ${userName} occasionally. `;
-    }
-    
-    // Add bio context if available
-    if (userBio) {
-      continuityPrompt += `Keep in mind this important context about the user: ${userBio}. Adapt your responses accordingly without explicitly mentioning it. `;
-    }
-    
-    const physicalActionMatches = conversationMessages
-      .filter(msg => msg.role === "assistant")
-      .slice(-2)
-      .map(msg => {
-        const matches = msg.content.match(/\*(.*?)\*/g);
-        return matches ? matches[0] : "";
-      }).filter(Boolean);
-      
-    if (physicalActionMatches.length > 0) {
-      continuityPrompt += "Your last physical actions were: " + 
-        physicalActionMatches.join(" then ") + ". ";
-    }
-    
-    formattedMessages.push({
-      role: "system",
-      content: continuityPrompt
-    });
-  }
-  
-  // Keep all conversation messages for better context
-  const recentMessages = conversationMessages.slice(-50);  // Use a higher limit for max context
-  formattedMessages.push(...recentMessages.map(({ role, content }) => ({ role, content })));
+  const formattedMessages = formatMessagesForApi(messages);
 
   const requestData: ChatCompletionRequest = {
     messages: formattedMessages,
     model,
-    temperature: 0.90, // Keep the 0.90 temperature
-    max_tokens: 900, // Increased from 400 to 900 to allow for longer responses
-    top_p: 0.95,
-    frequency_penalty: 0.40,
-    presence_penalty: 0.40,
-    repetition_penalty: 1.15,
+    temperature: DEFAULT_TEMPERATURE,
+    max_tokens: DEFAULT_MAX_TOKENS,
+    top_p: DEFAULT_TOP_P,
+    frequency_penalty: DEFAULT_FREQUENCY_PENALTY,
+    presence_penalty: DEFAULT_PRESENCE_PENALTY,
+    repetition_penalty: DEFAULT_REPETITION_PENALTY,
   };
 
   try {
@@ -162,4 +67,3 @@ export const generateChatCompletion = async (
     throw error;
   }
 };
-
