@@ -3,6 +3,9 @@ import { useState } from "react";
 import { Message } from "@/components/Chat/types";
 import { generateChatCompletion } from "@/services/openRouterService";
 import { toast } from "sonner";
+import { findLastAssistantMessageIndex } from "./utils/regenerationPreparation";
+import { prepareMessagesForRegeneration } from "./utils/regenerationPreparation";
+import { updateWithRegeneratedContent } from "./utils/regenerationUpdater";
 
 export const useMessageRegeneration = (
   messages: Message[],
@@ -13,18 +16,8 @@ export const useMessageRegeneration = (
   const handleRegenerateLastMessage = async () => {
     console.log("Regenerating last message...");
     
-    // Find the last assistant message, excluding the welcome message
-    const assistantMessages = messages.filter(
-      msg => msg.role === "assistant" && msg.id !== "assistant-welcome"
-    );
-    
-    if (assistantMessages.length === 0) {
-      toast.error("No message to regenerate");
-      return;
-    }
-    
-    const lastAssistantMessage = assistantMessages[assistantMessages.length - 1];
-    const actualIndex = messages.findIndex(msg => msg.id === lastAssistantMessage.id);
+    // Find the last assistant message index
+    const actualIndex = findLastAssistantMessageIndex(messages);
     
     if (actualIndex === -1) {
       toast.error("No message to regenerate");
@@ -34,71 +27,18 @@ export const useMessageRegeneration = (
     try {
       setIsLoading(true);
       
-      // Create a copy of all messages to send for context up to the message to regenerate
-      const systemMessages = messages.filter(msg => msg.role === "system");
-      const conversationMessages = messages.slice(0, actualIndex).filter(msg => msg.role !== "system");
-      
-      // Find the most recent user message to add to prompt
-      let lastUserIndex = -1;
-      for (let i = actualIndex - 1; i >= 0; i--) {
-        if (messages[i].role === "user") {
-          lastUserIndex = i;
-          break;
-        }
-      }
-
-      // For continuation messages, we need to make sure we have proper context
-      let userPrompt: Message | null = null;
-      
-      if (lastUserIndex !== -1) {
-        // For regular messages, include the last user message
-        userPrompt = {
-          id: `user-regen-${Date.now()}`,
-          role: "user", 
-          content: messages[lastUserIndex].content,
-          timestamp: Date.now(),
-        };
-      }
-      
-      // Add continuity reminder with enhanced length and detail instructions
-      const continuityReminder: Message = {
-        id: `system-continuity-regen-${Date.now()}`,
-        role: "system",
-        content: "IMPORTANT: Maintain continuity with your previous physical positions and emotional state. Complete all thoughts and sentences. Create a vivid, immersive scene with emotional depth and sensory details. Write a detailed, lengthy response (500-800 words minimum) that includes both descriptive actions and dialogue. Don't worry about the visual length of your response - the user interface can scroll to accommodate long messages. Vary your pacing to build tension or intimacy. Include physical sensations, environmental details, and emotional reactions. Be raw and intense in your emotions and actions. Do not truncate or limit your response based on perceived text container size.",
-        timestamp: Date.now(),
-      };
-      
-      const messagesToSend: Message[] = [...systemMessages, continuityReminder, ...conversationMessages];
-      
-      // Add user message/prompt if we have one
-      if (userPrompt) {
-        messagesToSend.push(userPrompt);
-      }
+      // Prepare messages for regeneration API call
+      const messagesToSend = prepareMessagesForRegeneration(messages, actualIndex);
       
       console.log("Messages to send for regeneration:", messagesToSend);
       
+      // Generate new content
       const response = await generateChatCompletion(messagesToSend);
       
-      // Update the messages array with the new response
-      setMessages(prevMessages => {
-        const updatedMessages = [...prevMessages];
-        
-        // Initialize regenerations array if it doesn't exist
-        if (!updatedMessages[actualIndex].regenerations) {
-          updatedMessages[actualIndex].regenerations = [];
-        }
-        
-        // Store the current content in regenerations only if it's not already stored
-        const currentContent = updatedMessages[actualIndex].content;
-        if (!updatedMessages[actualIndex].regenerations!.includes(currentContent)) {
-          updatedMessages[actualIndex].regenerations!.push(currentContent);
-        }
-        
-        // Update the current message with the new response
-        updatedMessages[actualIndex].content = response;
-        
-        return updatedMessages;
-      });
+      // Update the messages with the new response
+      setMessages(prevMessages => 
+        updateWithRegeneratedContent(prevMessages, actualIndex, response)
+      );
       
       toast.success("Response regenerated");
     } catch (error) {
