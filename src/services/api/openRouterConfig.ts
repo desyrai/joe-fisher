@@ -3,7 +3,7 @@
 export const DEFAULT_MODEL = "qwen/qwen-plus";
 
 // API request configuration defaults
-export const DEFAULT_TEMPERATURE = 0.90;
+export const DEFAULT_TEMPERATURE = 0.85;
 export const DEFAULT_MAX_TOKENS = 900;
 export const DEFAULT_TOP_P = 0.95;
 export const DEFAULT_FREQUENCY_PENALTY = 0.40;

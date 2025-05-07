@@ -35,8 +35,8 @@ export const generateChatCompletion = async (
   const requestData: ChatCompletionRequest = {
     messages: formattedMessages,
     model,
-    temperature: DEFAULT_TEMPERATURE,
-    max_tokens: DEFAULT_MAX_TOKENS,
+    temperature,
+    max_tokens,
     top_p: DEFAULT_TOP_P,
     frequency_penalty: DEFAULT_FREQUENCY_PENALTY,
     presence_penalty: DEFAULT_PRESENCE_PENALTY,
