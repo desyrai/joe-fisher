@@ -22,13 +22,23 @@ Avatar.displayName = AvatarPrimitive.Root.displayName
 const AvatarImage = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Image>,
   React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Image
-    ref={ref}
-    className={cn("h-full w-full object-cover", className)} // Added object-cover to ensure proper image fitting
-    {...props}
-  />
-))
+>(({ className, src, ...props }, ref) => {
+  // Log when avatar image is being rendered with its source
+  React.useEffect(() => {
+    if (src) {
+      console.log("Avatar image rendering with src:", src);
+    }
+  }, [src]);
+
+  return (
+    <AvatarPrimitive.Image
+      ref={ref}
+      src={src}
+      className={cn("h-full w-full object-cover", className)} // Added object-cover to ensure proper image fitting
+      {...props}
+    />
+  );
+})
 AvatarImage.displayName = AvatarPrimitive.Image.displayName
 
 const AvatarFallback = React.forwardRef<

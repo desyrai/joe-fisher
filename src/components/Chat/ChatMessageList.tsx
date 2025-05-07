@@ -33,6 +33,13 @@ const ChatMessageList = ({
     scrollToBottom();
   }, [messages]);
 
+  // Debug log to check if userInfo.avatar is correctly passed
+  console.log("ChatMessageList rendering:", { 
+    userInfo, 
+    characterAvatar,
+    messageCount: messages.length 
+  });
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -46,7 +53,7 @@ const ChatMessageList = ({
     assistantMessages[assistantMessages.length - 1] : null;
 
   return (
-    <div className="flex-1 overflow-y-auto px-6 py-8 space-y-8 bg-white/50"> {/* Added background for better contrast */}
+    <div className="flex-1 overflow-y-auto px-6 py-8 space-y-8 bg-white/50">
       {messages
         .filter(msg => msg.role !== "system")
         .map((message) => (

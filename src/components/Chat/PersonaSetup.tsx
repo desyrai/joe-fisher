@@ -1,5 +1,5 @@
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,7 +22,19 @@ const PersonaSetup = ({ userInfo, onSave, onCancel, isEditing = false }: Persona
   const [avatar, setAvatar] = useState<string | undefined>(userInfo.avatar);
   const [bio, setBio] = useState(userInfo.bio || "");
   const [isUploading, setIsUploading] = useState(false);
+  const [isExternalUrl, setIsExternalUrl] = useState(false);
+  const [externalUrl, setExternalUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Check if the current avatar is an external URL
+  useEffect(() => {
+    if (avatar && (avatar.startsWith("http://") || avatar.startsWith("https://"))) {
+      setIsExternalUrl(true);
+      setExternalUrl(avatar);
+    } else {
+      setIsExternalUrl(false);
+    }
+  }, [avatar]);
 
   // Handle file selection 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,6 +47,7 @@ const PersonaSetup = ({ userInfo, onSave, onCancel, isEditing = false }: Persona
     }
 
     setIsUploading(true);
+    setIsExternalUrl(false);
     
     // Convert image to base64 for storage and display
     const reader = new FileReader();
@@ -42,6 +55,7 @@ const PersonaSetup = ({ userInfo, onSave, onCancel, isEditing = false }: Persona
       if (event.target?.result) {
         setAvatar(event.target.result as string);
         setIsUploading(false);
+        console.log("Avatar set from file:", (event.target.result as string).substring(0, 50) + "...");
       }
     };
     reader.onerror = () => {
@@ -49,6 +63,30 @@ const PersonaSetup = ({ userInfo, onSave, onCancel, isEditing = false }: Persona
       setIsUploading(false);
     };
     reader.readAsDataURL(file);
+  };
+
+  // Handle external URL input
+  const handleExternalUrlSubmit = () => {
+    if (!externalUrl) {
+      toast.error("Please enter a valid URL");
+      return;
+    }
+    
+    setIsUploading(true);
+    
+    // Test if URL is valid by loading an image
+    const img = new Image();
+    img.onload = () => {
+      setAvatar(externalUrl);
+      setIsUploading(false);
+      toast.success("Image loaded successfully");
+      console.log("Avatar set from external URL:", externalUrl);
+    };
+    img.onerror = () => {
+      toast.error("Could not load image from URL");
+      setIsUploading(false);
+    };
+    img.src = externalUrl;
   };
 
   // Trigger file input click
@@ -65,6 +103,9 @@ const PersonaSetup = ({ userInfo, onSave, onCancel, isEditing = false }: Persona
   };
 
   const handleSave = () => {
+    // Log the avatar value being saved for debugging
+    console.log("Saving persona with avatar:", avatar?.substring(0, 50) + "...");
+    
     onSave({
       id: userInfo.id || "",
       name: name || "You",
@@ -87,7 +128,17 @@ const PersonaSetup = ({ userInfo, onSave, onCancel, isEditing = false }: Persona
           <div className="flex flex-col items-center gap-4">
             <Avatar className="h-24 w-24 border-2 border-desyr-soft-gold/30">
               {avatar ? (
-                <AvatarImage src={avatar} alt={name} className="object-cover" />
+                <AvatarImage 
+                  src={avatar} 
+                  alt={name} 
+                  className="object-cover"
+                  onError={(e) => {
+                    console.error("Error loading avatar in setup:", avatar);
+                    toast.error("Error loading image");
+                    // If image fails to load, clear it
+                    setAvatar(undefined);
+                  }}
+                />
               ) : (
                 <AvatarFallback className="bg-desyr-taupe text-white text-xl">
                   {name ? name.charAt(0).toUpperCase() : "Y"}
@@ -103,6 +154,28 @@ const PersonaSetup = ({ userInfo, onSave, onCancel, isEditing = false }: Persona
               onChange={handleFileChange}
               className="hidden"
             />
+            
+            {/* External URL input */}
+            <div className="w-full space-y-2">
+              <Label htmlFor="externalUrl">Image URL</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="externalUrl"
+                  value={externalUrl}
+                  onChange={(e) => setExternalUrl(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
+                  className="flex-1 border-desyr-soft-gold/30"
+                />
+                <Button 
+                  onClick={handleExternalUrlSubmit}
+                  variant="outline"
+                  className="border-desyr-soft-gold/30 hover:bg-desyr-soft-gold/10"
+                  disabled={isUploading || !externalUrl}
+                >
+                  Set
+                </Button>
+              </div>
+            </div>
             
             {/* Upload buttons */}
             <div className="flex gap-3">
@@ -126,6 +199,19 @@ const PersonaSetup = ({ userInfo, onSave, onCancel, isEditing = false }: Persona
               </Button>
             </div>
             {isUploading && <p className="text-sm text-desyr-taupe">Uploading image...</p>}
+            
+            {/* Test image with example URL */}
+            <Button
+              onClick={() => {
+                setExternalUrl("https://i.imgur.com/Zz4FEXf.jpg");
+                setTimeout(() => handleExternalUrlSubmit(), 100);
+              }}
+              variant="outline"
+              className="border-desyr-soft-gold/30 hover:bg-desyr-soft-gold/10"
+              disabled={isUploading}
+            >
+              Test with Example Image
+            </Button>
           </div>
           
           {/* Name Input */}

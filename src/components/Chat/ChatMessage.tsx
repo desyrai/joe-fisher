@@ -46,6 +46,14 @@ const ChatMessage = ({
     onEdit(content);
   };
 
+  // Debugging log to track avatar info flowing through the component
+  console.log("ChatMessage rendering:", { 
+    isUser, 
+    characterAvatar, 
+    userAvatar: userInfo?.avatar,
+    messageId: message.id
+  });
+
   return (
     <div className="mb-10">
       <Card className="border border-desyr-soft-gold/20 shadow-sm">
@@ -53,8 +61,8 @@ const ChatMessage = ({
           {/* Left Column - Character Avatar */}
           <MessageAvatar 
             isUser={isUser}
-            avatar={isUser ? (userInfo.avatar || "/placeholder.svg") : characterAvatar}
-            name={userInfo.name}
+            avatar={isUser ? userInfo?.avatar : characterAvatar}
+            name={userInfo?.name || "You"}
           />
 
           {/* Right Column - Message Content */}

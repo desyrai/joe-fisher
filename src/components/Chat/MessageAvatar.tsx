@@ -9,7 +9,10 @@ interface MessageAvatarProps {
 }
 
 const MessageAvatar = ({ isUser, avatar, name }: MessageAvatarProps) => {
-  // Use the avatar directly without ternary operation that was causing issues
+  // Log the avatar URL for debugging
+  console.log("MessageAvatar rendering:", { isUser, avatar, name });
+  
+  // Use the avatar directly, with a placeholder fallback
   const imageSource = avatar || "/placeholder.svg";
 
   return (
@@ -20,6 +23,7 @@ const MessageAvatar = ({ isUser, avatar, name }: MessageAvatarProps) => {
           alt={isUser ? name : "Character"} 
           className="object-cover" 
           onError={(e) => {
+            console.error("Avatar image failed to load:", imageSource);
             // If image fails to load, set src to placeholder
             (e.target as HTMLImageElement).src = "/placeholder.svg";
           }}
