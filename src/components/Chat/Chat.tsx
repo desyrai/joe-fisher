@@ -4,6 +4,7 @@ import ChatHeader from "./ChatHeader";
 import ChatMessageList from "./ChatMessageList";
 import ChatInput from "./ChatInput";
 import PersonaManager from "./PersonaManager";
+import { CharacterPromptModal } from "./CharacterPromptModal";
 import { ChatProps, UserInfo } from "./types";
 import { useChat } from "@/hooks/chat/useChat";
 
@@ -13,6 +14,7 @@ const Chat = ({
   initialSystemMessage = "You are Joe Fisher, a dominant, emotionally raw, and protective confidant. You speak directly and with authority, while maintaining respect and boundaries. Your responses are strong and clear, never crude. Match the tone and depth of the user's messages.",
 }: ChatProps) => {
   const [expandedAvatar, setExpandedAvatar] = useState(false);
+  const [showPromptModal, setShowPromptModal] = useState(false);
   const [activePersonaId, setActivePersonaId] = useState<string | null>(
     localStorage.getItem("active_persona_id") || null
   );
@@ -107,6 +109,7 @@ const Chat = ({
         expandedAvatar={expandedAvatar}
         setExpandedAvatar={setExpandedAvatar}
         onNewChat={handleNewChat}
+        onShowPrompt={() => setShowPromptModal(true)}
       />
       
       {/* Persona Manager */}
@@ -138,6 +141,10 @@ const Chat = ({
         onRegenerate={handleRegenerateLastMessage}
         hasMessages={messages.some(m => m.role === "assistant" && m.id !== "assistant-welcome")}
       />
+      
+      {showPromptModal && (
+        <CharacterPromptModal onClose={() => setShowPromptModal(false)} />
+      )}
     </div>
   );
 };

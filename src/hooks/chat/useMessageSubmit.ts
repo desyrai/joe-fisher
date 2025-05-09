@@ -10,6 +10,7 @@ export const useMessageSubmit = (
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>
 ) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [joePrompt, setJoePrompt] = useState<string | null>(null);
 
   const handleSubmit = async (input: string, e?: React.FormEvent) => {
     e?.preventDefault();
@@ -36,6 +37,19 @@ export const useMessageSubmit = (
       setIsLoading(true);
       
       const messagesToSend = prepareMessagesForApi(messages, instructions, visibleText, !e);
+      
+      // Store the prompt for the user to see
+      const systemMessages = messagesToSend.filter(msg => msg.role === "system");
+      const enhancedSystemPrompt = systemMessages.find(msg => 
+        msg.content.includes("Write in third person present tense") || 
+        msg.content.includes("MMA fighter")
+      );
+      
+      if (enhancedSystemPrompt && enhancedSystemPrompt.content) {
+        setJoePrompt(enhancedSystemPrompt.content);
+        // Store in sessionStorage for retrieval elsewhere
+        sessionStorage.setItem("joe_character_prompt", enhancedSystemPrompt.content);
+      }
       
       const response = await generateChatCompletion(messagesToSend);
       
@@ -95,7 +109,8 @@ export const useMessageSubmit = (
 
   return {
     isLoading,
-    handleSubmit
+    handleSubmit,
+    joePrompt
   };
 };
 
